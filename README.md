@@ -11,4 +11,3 @@ More specifically:
 
 **Account Class:** The Account Class will represent individual bank accounts within the app. Each account object will store information about the account holder, account number, balance, and other relevant details. The class will provide methods for depositing and withdrawing money, as well as for transferring funds between accounts. By implementing the Account Class, the app will allow users to manage their finances by keeping track of their account balances, transactions, and other banking activities.
 
-Testing testing
