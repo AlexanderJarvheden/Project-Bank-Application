@@ -1,0 +1,11 @@
+{
+    "java.project.referencedsrcraries": [
+        "path/to/javafx-sdk-20.0.1/src/javafx.base.jar",
+        "path/to/javafx-sdk-20.0.1/src/javafx.controls.jar",
+        "path/to/javafx-sdk-20.0.1/src/javafx.fxml.jar",
+        "path/to/javafx-sdk-20.0.1/src/javafx.graphics.jar",
+        "path/to/javafx-sdk-20.0.1/src/javafx.media.jar",
+        "path/to/javafx-sdk-20.0.1/src/javafx.swing.jar",
+        "path/to/javafx-sdk-20.0.1/src/javafx.web.jar"
+    ]
+}
