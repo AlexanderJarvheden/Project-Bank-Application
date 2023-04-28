@@ -4,7 +4,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * User class
+ * User class. Contains a map of the users accounts, so that each user can be
+ * connected to multiple accounts
+ * depending on what type of account(s) they have.
+ * 
+ * @author Joachim Olsson
+ * @author Alexander Järvheden
+ * @author Aziz Ali
+ * 
  */
 
 public class User {
