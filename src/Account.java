@@ -6,7 +6,11 @@ import java.util.List;
 /**
  * Account class
  * 
- * This class represents a bank accounts within the bank.
+ * This class represents a bank accounts within the bank. They contain
+ * information about the accounts
+ * balance, interest rate, transaction history and account number. Each account
+ * is connected to a user
+ * and can be accessed through the user class.
  * 
  * @author Joachim Olsson
  * @author Alexander Järvheden
@@ -19,12 +23,12 @@ public class Account {
 
     private String accountNumber;
     private String accountType;
-    private String accountOwner;
+    private User accountOwner;
     private double balance;
     private double interestRate;
     private List<String> transactionHistory;
 
-    public Account(String accountNumber, String accountType, String accountOwner, double interestRate) {
+    public Account(String accountNumber, String accountType, User accountOwner, double interestRate) {
         this.accountNumber = accountNumber;
         this.accountType = accountType;
         this.accountOwner = accountOwner;

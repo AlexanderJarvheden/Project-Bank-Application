@@ -20,6 +20,7 @@ public class Bank {
     private double liquidCash;
     private double totalCapitalLoanedOut;
     private Map<String, Account> accounts;
+    private int accountNumberCounter = 0;
 
     public Bank(String clearingNumber) {
         this.clearingNumber = clearingNumber;
@@ -27,6 +28,24 @@ public class Bank {
         this.liquidCash = 0;
         this.totalCapitalLoanedOut = 0;
         this.accounts = new HashMap<String, Account>();
+    }
+
+    public Account getAccount(String accountNumber) {
+        return accounts.get(accountNumber);
+    }
+
+    public Account createAccount(String accountType, User user, double interestRate) {
+        String accountNumber = generateUniqueAccountNumber();
+        Account newAccount = new Account(accountNumber, accountType, user, interestRate);
+        accounts.put(accountNumber, newAccount);
+        user.addAccount(newAccount);
+        return newAccount;
+    }
+
+    private String generateUniqueAccountNumber() {
+        int uniqueNumber = accountNumberCounter;
+        accountNumberCounter++;
+        return String.format("%010d", uniqueNumber);
     }
 
     public String getClearingNumber() {
@@ -65,10 +84,11 @@ public class Bank {
         this.totalCapitalLoanedOut = totalCapitalLoanedOut;
     }
 
-    public void addAccount(String accountType) {
-        int accountNumber = accounts.size() + 1;
-        Account newAccount = new Account(accountNumber, accountType, clearingNumber, accountNumber)
-        this.accounts.put(accountNumber, account);
+    public void addAccount(String accountType, User user, double interestRate) {
+        Account newAccount = createAccount(accountType, user, interestRate);
+        String accountNumber = newAccount.getAccountNumber();
+        accounts.put(accountNumber, newAccount);
+        user.addAccount(newAccount);
     }
 
     public void removeAccount(String accountNumber) {
