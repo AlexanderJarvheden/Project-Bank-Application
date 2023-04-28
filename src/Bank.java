@@ -65,7 +65,9 @@ public class Bank {
         this.totalCapitalLoanedOut = totalCapitalLoanedOut;
     }
 
-    public void addAccount(String accountNumber, Account account) {
+    public void addAccount(String accountType) {
+        int accountNumber = accounts.size() + 1;
+        Account newAccount = new Account(accountNumber, accountType, clearingNumber, accountNumber)
         this.accounts.put(accountNumber, account);
     }
 
