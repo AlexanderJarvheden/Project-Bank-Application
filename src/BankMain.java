@@ -9,7 +9,6 @@ public class BankMain {
     public static void main(String[] args) {
         Bank bank = new Bank("1234");
         Scanner scanner = new Scanner(System.in);
-        Map<String, User> users = new HashMap<>();
 
         while (true) {
             System.out.println("Välkommen till bankappen! Välj ett alternativ:");
@@ -28,17 +27,17 @@ public class BankMain {
                 case 1:
                     // Create user
                     System.out.print("Ange användarnamn: ");
-                    String username = scanner.nextLine();
-                    System.out.print("Ange lösenord: ");
-                    String password = scanner.nextLine();
-                    users.put(username, new User(username, password));
+                    String userId = scanner.nextLine();
+                    System.out.print("Ange namn: ");
+                    String name = scanner.nextLine();
+                    bank.createUser(userId, name);
                     System.out.println("Användare skapad!");
                     break;
                 case 2:
                     // Create account
                     System.out.print("Ange användarnamn: ");
-                    username = scanner.nextLine();
-                    User user = users.get(username);
+                    String username = scanner.nextLine();
+                    User user = bank.getUser(username);
                     if (user != null) {
                         System.out.print("Ange kontotyp (t.ex. sparkonto, lönekonto): ");
                         String accountType = scanner.nextLine();

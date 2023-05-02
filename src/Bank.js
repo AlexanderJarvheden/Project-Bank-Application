@@ -1,4 +1,5 @@
 class Bank {
+
     constructor(clearingNumber) {
         this.clearingNumber = clearingNumber;
         this.totalCapitalInBank = 0;

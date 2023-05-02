@@ -15,7 +15,6 @@ import java.util.Map;
  */
 
 public class User {
-
     private String id;
     private String name;
     private Map<String, Account> userAccounts;
