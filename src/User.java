@@ -16,14 +16,23 @@ import java.util.Map;
 
 public class User {
 
-    private String id;
+    private String id; //Personal-number
+    private String password;
     private String name;
     private Map<String, Account> userAccounts;
 
-    public User(String id, String name) {
+    public User(String id, String name, String password) {
         this.id = id;
         this.name = name;
+        this.password = password;
         this.userAccounts = new HashMap<>();
+    }
+
+    public boolean signIn(String id, String password){
+        if(id.equals(this.id) && password.equals(this.password)){
+            return true;
+        }
+        return false;
     }
 
     public String getId() {
