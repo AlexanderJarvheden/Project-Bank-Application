@@ -9,10 +9,12 @@ export default function Home() {
       {/* Use the `Screen` component to configure the layout. */}
       <ScrollView>
         <TouchableOpacity>
-          <Stack.Screen options={{ title: "Sign in"}} style={{backgroundColor: COLORS.secondary}} />
+          <Stack.Screen options={{ title: "Welcome to your bank", headerStyle: {backgroundColor: COLORS.red}, headerTitleStyle: { fontSize: 30, color: COLORS.white }}} />
           {/* Use the `Link` component to enable optimized client-side routing. */}
           <SignIn/>
-          <Link href="/details">Go to Details</Link>
+          <View style={{ justifyContent: "center", alignItems: "center" }}>
+          <Link href="/details" style={{ color: 'white', fontSize: 16, fontFamily: 'Arial', textAlign: 'center' }}>New user?</Link>
+          </View>
         </TouchableOpacity>
       </ScrollView>
     </View>
