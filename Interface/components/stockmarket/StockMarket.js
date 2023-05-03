@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, ScrollView, TextInput, Text, Button } from 'react-native';
-import { ListItem, Icon } from 'react-native-elements';
+import { View, StyleSheet, ScrollView, TextInput, Text } from 'react-native';
+import { ListItem, Icon, Button } from 'react-native-elements';
 import axios from 'axios';
 
 const StockMarketTab = () => {
@@ -68,10 +68,8 @@ const [portfolio, setPortfolio] = useState([]);
             {popularStocks.map((stock, index) => (
               <ListItem key={index} bottomDivider>
                 <ListItem.Content>
-                  <ListItem.Title>{stock["01. symbol"]}</ListItem.Title>
-                  <ListItem.Subtitle>
-                    ${parseFloat(stock["05. price"]).toFixed(2)}
-                  </ListItem.Subtitle>
+                  <ListItem.Title>{stock && stock['01. symbol']}</ListItem.Title>
+                  <ListItem.Subtitle>${stock && parseFloat(stock['05. price']).toFixed(2)}</ListItem.Subtitle>
                 </ListItem.Content>
                 <Button
                   title="Buy"
@@ -166,3 +164,5 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
   },
 });
+
+export default StockMarketTab;
