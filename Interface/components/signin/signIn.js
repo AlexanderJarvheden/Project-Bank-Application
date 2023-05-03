@@ -35,11 +35,11 @@ const SignIn = ({ onSignIn }) => {
         value={password}
         secureTextEntry
       />
-      {/* <TouchableOpacity style={styles.button} onPress={handleSignIn}>
+      <TouchableOpacity style={styles.button} onPress={handleSignIn}>
         <View style={styles.buttonContainer}>
           <Text style={styles.buttonText}>Sign in</Text>
         </View>
-      </TouchableOpacity> */}
+      </TouchableOpacity>
     </View>
   );
 };
