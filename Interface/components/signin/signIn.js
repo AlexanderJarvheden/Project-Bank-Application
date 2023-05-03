@@ -10,16 +10,16 @@ const SignIn = () => {
     const [password, setPassword] = useState('');
   
     const handleSignIn = () => {
-        // if(!User.signIn(emailOrPersonalnumber, password)){
-        //     Alert.alert('Error', 'Invalid email or password.');
-        // }
+        if(!User.signIn(emailOrPersonalnumber, password)){
+            Alert.alert('Error', 'Invalid email or password.');
+        }
         Alert.alert('Error', 'Invalid email or password.');
     };
   
     return (
       <View style={styles.container}>
         <TextInput
-          style={{...styles.input, color: '#000000'}}
+          style={{...styles.input, color: '#fffff'}}
           placeholder="Email or Personal-Number"
           onChangeText={setEmailOrPersonalnumber}
           value={emailOrPersonalnumber}
