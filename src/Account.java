@@ -22,16 +22,12 @@ import java.util.List;
 public class Account {
 
     private String accountNumber;
-    private String accountType;
-    private User accountOwner;
     private double balance;
     private double interestRate;
     private List<String> transactionHistory;
 
     public Account(String accountNumber, String accountType, User accountOwner, double interestRate) {
         this.accountNumber = accountNumber;
-        this.accountType = accountType;
-        this.accountOwner = accountOwner;
         this.interestRate = interestRate;
         this.transactionHistory = new ArrayList<>();
         this.balance = 0;
