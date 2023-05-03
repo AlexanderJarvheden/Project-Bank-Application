@@ -1,12 +1,14 @@
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 /**
  * Bank class
@@ -19,23 +21,17 @@ import java.util.Map;
  */
 
 public class Bank {
-
     private String clearingNumber;
-    private double totalCapitalInBank;
-    private double liquidCash;
-    private double totalCapitalLoanedOut;
     private Map<String, Account> accounts;
     private Map<String, User> users;
     private int accountNumberCounter = 0;
+    private int cardAccountNumberCounter = 0;
     private static final String USERS_FILE_PATH = "src/users.txt";
 
     public Bank(String clearingNumber) {
+        this.accounts = new HashMap<>();
+        this.users = new HashMap<>();
         this.clearingNumber = clearingNumber;
-        this.totalCapitalInBank = 0;
-        this.liquidCash = 0;
-        this.totalCapitalLoanedOut = 0;
-        this.accounts = new HashMap<String, Account>();
-        this.users = new HashMap<String, User>();
         loadUsersFromFile();
     }
 
@@ -47,7 +43,15 @@ public class Bank {
             }
             PrintWriter writer = new PrintWriter(new FileWriter(file));
             for (User user : users.values()) {
-                writer.println(user.getId() + "," + user.getName());
+                StringBuilder accountNumbers = new StringBuilder();
+                for (Account account : user.getAccounts()) {
+                    accountNumbers.append(account.getAccountNumber()).append(",");
+                }
+                if (accountNumbers.length() > 0) {
+                    accountNumbers.deleteCharAt(accountNumbers.length() - 1);
+                }
+                writer.println(user.getId() + "," + user.getName() + "," + user.getPassword() + ","
+                        + accountNumbers.toString());
             }
             writer.close();
         } catch (IOException e) {
@@ -64,9 +68,17 @@ public class Bank {
                 String id = fields[0];
                 String name = fields[1];
                 String password = fields[2];
-                if (!users.containsKey(id)) {
-                    createUser(id, name, password);
+                User user = new User(id, name, password);
+                if (fields.length > 3) {
+                    String[] accountNumbers = fields[3].split(",");
+                    for (String accountNumber : accountNumbers) {
+                        Account account = accounts.get(accountNumber);
+                        if (account != null) {
+                            user.addAccount(account);
+                        }
+                    }
                 }
+                users.put(id, user);
             }
         } catch (IOException e) {
             System.out.println("Failed to load users from file.");
@@ -103,85 +115,102 @@ public class Bank {
         return users.get(id);
     }
 
-    public Account createAccount(String accountType, User user, double interestRate) {
-        String accountNumber = generateUniqueAccountNumber();
-        Account newAccount = new Account(accountNumber, accountType, user, interestRate);
-        accounts.put(accountNumber, newAccount);
-        user.addAccount(newAccount);
-        return newAccount;
+    public Account createAccount(String accountType, String userId, double interestRate) {
+        User user = users.get(userId);
+        if (user != null) {
+            String accountNumber = generateAccountNumber(accountType);
+            Account account;
+            switch (accountType) {
+                case "sparkonto":
+                    account = new SavingAccount(accountNumber, interestRate, user);
+                    break;
+                case "kreditkonto":
+                    account = new CardAccount(accountNumber, interestRate, generateUniqueCardAccountNumber(), user);
+                    break;
+                case "lånekonto":
+                    account = new LoanAccount(accountNumber, interestRate, user);
+                    break;
+                case "aktiekonto":
+                    account = new ShareAccount(accountNumber, interestRate, 0, 0.0, user);
+                    break;
+                default:
+                    return null;
+            }
+            user.addAccount(account); // add account to user's account list
+            try {
+                FileWriter writer = new FileWriter("src/users.txt", true);
+                writer.write(accountNumber + "," + userId + "\n");
+                writer.close();
+                FileWriter accountWriter = new FileWriter("src/accounts.txt", true);
+                accountWriter.write(account.getAccountInfo() + "\n");
+                accountWriter.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return account;
+        }
+        return null;
     }
 
     public Account getAccount(String accountNumber) {
-        return accounts.get(accountNumber);
+        try {
+            File file = new File("src/accounts.txt");
+            Scanner scanner = new Scanner(file);
+
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                String[] parts = line.split(",");
+                String num = parts[0];
+                String userId = parts[1];
+                double balance = Double.parseDouble(parts[2]);
+                double interestRate = Double.parseDouble(parts[3]);
+                String accountType = parts[4];
+
+                if (num.equals(accountNumber)) {
+                    User accountOwner = getUser(userId);
+                    if (accountType.equals("Sparkonto")) {
+                        return new SavingAccount(num, interestRate, balance, accountOwner);
+                    } else if (accountType.equals("Lånekonto")) {
+                        return new LoanAccount(num, interestRate, balance, accountOwner);
+                    } else if (accountType.equals("Kortkonto")) {
+                        int cardNum = Integer.parseInt(parts[5]);
+                        return new CardAccount(num, interestRate, cardNum, accountOwner);
+                    } else if (accountType.equals("Aktiekonto")) {
+                        int numShares = Integer.parseInt(parts[5]);
+                        double sharePrice = Double.parseDouble(parts[6]);
+                        return new ShareAccount(num, interestRate, numShares, sharePrice, accountOwner);
+                    }
+                }
+            }
+            scanner.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
-    private String generateUniqueAccountNumber() {
+    private String generateAccountNumber(String accountType) {
         int uniqueNumber = accountNumberCounter;
         accountNumberCounter++;
-        return String.format("%010d", uniqueNumber);
+        return accountType.substring(0, 2).toUpperCase() + String.format("%010d", uniqueNumber);
     }
 
     public String getClearingNumber() {
         return this.clearingNumber;
     }
 
-    public double getTotalCapitalInBank() {
-        return this.totalCapitalInBank;
-    }
-
-    public double getLiquidCash() {
-        return this.liquidCash;
-    }
-
-    public double getTotalCapitalLoanedOut() {
-        return this.totalCapitalLoanedOut;
-    }
-
     public Map<String, Account> getAccounts() {
         return this.accounts;
-    }
-
-    public void setClearingNumber(String clearingNumber) {
-        this.clearingNumber = clearingNumber;
-    }
-
-    public void setTotalCapitalInBank(double totalCapitalInBank) {
-        this.totalCapitalInBank = totalCapitalInBank;
-    }
-
-    public void setLiquidCash(double liquidCash) {
-        this.liquidCash = liquidCash;
-    }
-
-    public void setTotalCapitalLoanedOut(double totalCapitalLoanedOut) {
-        this.totalCapitalLoanedOut = totalCapitalLoanedOut;
     }
 
     public void removeAccount(String accountNumber) {
         this.accounts.remove(accountNumber);
     }
 
-    public void addCapital(double amount) {
-        this.totalCapitalInBank += amount;
+    public String generateUniqueCardAccountNumber() {
+        int uniqueNumber = cardAccountNumberCounter;
+        cardAccountNumberCounter++;
+        return String.format("%08d", uniqueNumber);
     }
 
-    public void removeCapital(double amount) {
-        this.totalCapitalInBank -= amount;
-    }
-
-    public void addLiquidCash(double amount) {
-        this.liquidCash += amount;
-    }
-
-    public void removeLiquidCash(double amount) {
-        this.liquidCash -= amount;
-    }
-
-    public void addCapitalLoanedOut(double amount) {
-        this.totalCapitalLoanedOut += amount;
-    }
-
-    public void removeCapitalLoanedOut(double amount) {
-        this.totalCapitalLoanedOut -= amount;
-    }
 }

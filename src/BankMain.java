@@ -41,9 +41,13 @@ public class BankMain {
                             System.out.print("Ange räntesats (t.ex. 0.02 för 2%): ");
                             double interestRate = scanner.nextDouble();
                             scanner.nextLine();
-                            Account createdAccount = bank.createAccount(accountType, user, interestRate);
-                            String accountNumber = createdAccount.getAccountNumber();
-                            System.out.println("Konto skapat med kontonummer: " + accountNumber);
+                            Account createdAccount = bank.createAccount(accountType, user.getId(), interestRate);
+                            if (createdAccount != null) {
+                                String accountNumber = createdAccount.getAccountNumber();
+                                System.out.println("Konto skapat med kontonummer: " + accountNumber);
+                            } else {
+                                System.out.println("Kontotypen stöds inte av banken.");
+                            }
                         } else if (user == null) {
                             System.out.println("Användaren hittades inte.");
                         }
