@@ -22,6 +22,7 @@ import java.util.List;
 public class Account {
 
     private String accountNumber;
+    private String accountType;
     private double balance;
     private double interestRate;
     private List<String> transactionHistory;
@@ -29,6 +30,7 @@ public class Account {
     public Account(String accountNumber, String accountType, User accountOwner, double interestRate) {
         this.accountNumber = accountNumber;
         this.interestRate = interestRate;
+        this.accountType = accountType;
         this.transactionHistory = new ArrayList<>();
         this.balance = 0;
     }
