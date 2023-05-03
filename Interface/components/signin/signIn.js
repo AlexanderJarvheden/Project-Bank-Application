@@ -1,14 +1,19 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { COLORS } from '../../constants';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 
+import User from '../../src/User';
+
 const SignIn = () => {
-    const [email, setEmail] = useState('');
+    const [emailOrPersonalnumber, setEmailOrPersonalnumber] = useState('');
     const [password, setPassword] = useState('');
   
     const handleSignIn = () => {
-      // Add logic to handle sign-in process
+        // if(!User.signIn(emailOrPersonalnumber, password)){
+        //     Alert.alert('Error', 'Invalid email or password.');
+        // }
+        Alert.alert('Error', 'Invalid email or password.');
     };
   
     return (
@@ -16,8 +21,8 @@ const SignIn = () => {
         <TextInput
           style={{...styles.input, color: '#000000'}}
           placeholder="Email or Personal-Number"
-          onChangeText={setEmail}
-          value={email}
+          onChangeText={setEmailOrPersonalnumber}
+          value={emailOrPersonalnumber}
           autoCapitalize="none"
           keyboardType="email-address"
         />
