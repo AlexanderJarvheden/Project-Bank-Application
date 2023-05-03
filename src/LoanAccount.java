@@ -1,4 +1,3 @@
-package src;
 
 public class LoanAccount extends Account {
     private double interestRate;

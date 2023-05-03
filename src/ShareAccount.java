@@ -1,4 +1,3 @@
-package src;
 
 public class ShareAccount extends Account {
     private double sharePrice;
