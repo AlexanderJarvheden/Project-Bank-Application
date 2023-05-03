@@ -1,100 +1,142 @@
-const bank = new Bank("1234");
-const readline = require('readline');
+const readline = require("readline");
+const Bank = require("./Bank"); // Assuming you have a separate Bank class implemented
+
 const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout
 });
 
-let users = new Map();
+const bank = new Bank("1234");
+let loggedInUser = null;
+let loggedIn = false;
 
-rl.setPrompt("Ange ditt val: ");
+function main() {
+    console.log("Welcome to the bank app! Choose an option:");
 
-rl.on('line', (input) => {
-    switch (input.trim()) {
-        case '1':
-            // Create user
-            rl.question("Ange användarnamn: ", (username) => {
-                rl.question("Ange lösenord: ", (password) => {
-                    users.set(username, new User(username, password));
-                    console.log("Användare skapad!");
-                    rl.prompt();
-                });
-            });
-            break;
-        case '2':
-            // Create account
-            rl.question("Ange användarnamn: ", (username) => {
-                let user = users.get(username);
-                if (user) {
-                    rl.question("Ange kontotyp (t.ex. sparkonto, lönekonto): ", (accountType) => {
-                        rl.question("Ange räntesats (t.ex. 0.02 för 2%): ", (interestRate) => {
-                            let createdAccount = bank.createAccount(accountType, user, interestRate);
-                            let accountNumber = createdAccount.getAccountNumber();
-                            console.log("Konto skapat med kontonummer: " + accountNumber);
-                            rl.prompt();
-                        });
+    if (loggedIn) {
+        console.log("1. Create account");
+        console.log("2. Show balance");
+        console.log("3. Deposit");
+        console.log("4. Withdrawal");
+        console.log("5. Quit");
+    } else {
+        console.log("1. Create user");
+        console.log("5. Quit");
+        console.log("6. Log in");
+    }
+
+    rl.question("Enter your choice: ", function (choice) {
+        switch (parseInt(choice)) {
+            case 1:
+                if (loggedIn) {
+                    // Create account
+                    rl.question("Enter username: ", function (username) {
+                        const user = bank.getUser(username);
+                        if (user) {
+                            rl.question("Enter account type (e.g., savings, checking): ", function (accountType) {
+                                rl.question("Enter interest rate (e.g., 0.02 for 2%): ", function (interestRate) {
+                                    const createdAccount = bank.createAccount(accountType, user, parseFloat(interestRate));
+                                    const accountNumber = createdAccount.getAccountNumber();
+                                    console.log("Account created with account number: " + accountNumber);
+                                    main();
+                                });
+                            });
+                        } else {
+                            console.log("User not found.");
+                            main();
+                        }
                     });
                 } else {
-                    console.log("Användaren hittades inte.");
-                    rl.prompt();
+                    // Create user
+                    rl.question("Enter username: ", function (userId) {
+                        rl.question("Enter name: ", function (name) {
+                            rl.question("Enter password: ", function (password) {
+                                bank.createUser(userId, name, password);
+                                console.log("User created!");
+                                main();
+                            });
+                        });
+                    });
                 }
-            });
-            break;
-        case '3':
-            // Show balance
-            rl.question("Ange kontonummer: ", (accountNumber) => {
-                let account = bank.getAccount(accountNumber);
-                if (account) {
-                    console.log("Saldo: " + account.getBalance());
-                } else {
-                    console.log("Kontot hittades inte.");
-                }
-                rl.prompt();
-            });
-            break;
-        case '4':
-            // Deposit
-            rl.question("Ange kontonummer: ", (accountNumber) => {
-                rl.question("Ange belopp att sätta in: ", (depositAmount) => {
-                    let account = bank.getAccount(accountNumber);
+                break;
+            case 2:
+                // Show balance
+                rl.question("Enter account number: ", function (accountNumber) {
+                    const account = bank.getAccount(accountNumber);
                     if (account) {
-                        account.deposit(depositAmount);
-                        console.log("Insättning genomförd!");
+                        console.log("Balance: " + account.getBalance());
                     } else {
-                        console.log("Kontot hittades inte.");
+                        console.log("Account not found.");
                     }
-                    rl.prompt();
+                    main();
                 });
-            });
-            break;
-        case '5':
-            // Withdrawal
-            rl.question("Ange kontonummer: ", (accountNumber) => {
-                rl.question("Ange belopp att ta ut: ", (withdrawalAmount) => {
-                    let account = bank.getAccount(accountNumber);
-                    if (account) {
-                        if (account.withdraw(withdrawalAmount)) {
-                            console.log("Uttag genomfört!");
+                break;
+            case 3:
+                // Deposit
+                rl.question("Enter account number: ", function (accountNumber) {
+                    rl.question("Enter amount to deposit: ", function (depositAmount) {
+                        const account = bank.getAccount(accountNumber);
+                        if (account) {
+                            account.deposit(parseFloat(depositAmount));
+                            console.log("Deposit successful!");
                         } else {
-                            console.log("Otillräckligt saldo för uttag.");
+                            console.log("Account not found.");
                         }
-                    } else {
-                        console.log("Kontot hittades inte.");
-                    }
-                    rl.prompt();
+                        main();
+                    });
                 });
-            });
-            break;
-        case '6':
-            console.log("Tack för att du använt bankappen!");
-            process.exit(0);
-        default:
-            console.log("Ogiltigt val. Försök igen.");
-            rl.prompt();
-    }
-});
+                break;
+            case 4:
+                // Withdrawal
+                rl.question("Enter account number: ", function (accountNumber) {
+                    rl.question("Enter amount to withdraw: ", function (withdrawalAmount) {
+                        const account = bank.getAccount(accountNumber);
+                        if (account) {
+                            if (account.withdraw(parseFloat(withdrawalAmount))) {
+                                console.log("Withdrawal successful!");
+                            } else {
+                                console.log("Insufficient balance for withdrawal.");
+                            }
+                        } else {
+                            console.log("Account not found.");
+                        }
+                        main();
+                    });
+                });
+                break;
+            case 5:
+                console.log("Thank you for using the bank app!");
+                rl.close();
+                break;
+            case 6:
+                if (!loggedIn) {
+                    // Log in with existing user
+                    rl.question("Enter username: ", function (usernameInput) {
+                        const userExisting = bank.getUser(usernameInput);
+                        if (userExisting) {
+                            rl.question("Enter password: ", function (passwordExisting) {
+                                if (userExisting.getPassword() === passwordExisting) {
+                                    console.log("Login successful!");
+                                    loggedInUser = userExisting;
+                                    loggedIn = true;
+                                } else {
+                                    console.log("Incorrect password. Try again.");
+                                }
+                                main();
+                            });
+                        } else {
+                            console.log("User not found.");
+                            main();
+                        }
+                    });
+                }
+                break;
+            default:
+                console.log("Invalid choice. Try again.");
+                main();
+        }
+    });
+}
 
-console.log("Välkommen till bankappen! Välj ett alternativ:");
-console.log("1. Skapa användare");
-console.log("2. Skapa konto");
-console.log("3. Visa saldo");
+main();
+

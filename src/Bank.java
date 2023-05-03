@@ -65,7 +65,9 @@ public class Bank {
                 String id = fields[0];
                 String name = fields[1];
                 String password = fields[2];
-                createUser(id, name, password);
+                if (!users.containsKey(id)) {
+                    createUser(id, name, password);
+                }
             }
         } catch (IOException e) {
             System.out.println("Failed to load users from file.");
@@ -83,10 +85,14 @@ public class Bank {
     }
 
     public void createUser(String userId, String name, String password) {
+        if (getUser(userId) != null) {
+            System.out.println("Användarnamnet är redan taget. Försök igen med ett annat användarnamn.");
+            return;
+        }
         User newUser = new User(userId, name, password);
         this.users.put(userId, newUser);
         try {
-            FileWriter writer = new FileWriter("users.txt", true);
+            FileWriter writer = new FileWriter("src/users.txt", true);
             writer.write(userId + "," + name + "," + password + "\n");
             writer.close();
         } catch (IOException e) {
@@ -179,5 +185,4 @@ public class Bank {
     public void removeCapitalLoanedOut(double amount) {
         this.totalCapitalLoanedOut -= amount;
     }
-
 }

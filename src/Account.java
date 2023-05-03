@@ -19,18 +19,16 @@ import java.util.List;
  * 
  */
 
-public class Account {
+public abstract class Account {
 
     private String accountNumber;
-    private String accountType;
     private double balance;
     private double interestRate;
     private List<String> transactionHistory;
 
-    public Account(String accountNumber, String accountType, User accountOwner, double interestRate) {
+    public Account(String accountNumber, double interestRate) {
         this.accountNumber = accountNumber;
         this.interestRate = interestRate;
-        this.accountType = accountType;
         this.transactionHistory = new ArrayList<>();
         this.balance = 0;
     }
@@ -73,5 +71,4 @@ public class Account {
     public String getAccountNumber() {
         return accountNumber;
     }
-
 }

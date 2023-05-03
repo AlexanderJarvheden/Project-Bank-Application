@@ -1,16 +1,18 @@
 package src;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.*;
 
-public class MainFrame extends JFrame{
+public class MainFrame extends JFrame {
     final private Font mainFont = new Font("Segoe print", Font.BOLD, 18);
     JTextField tfFirstName, tfLastName;
 
     JLabel lbWelcome;
-    public void initialize(){
+
+    public void initialize() {
         JLabel lbFirstName = new JLabel("Personal Number");
         lbFirstName.setFont(mainFont);
 
@@ -27,12 +29,12 @@ public class MainFrame extends JFrame{
         formPanel.add(lbLastName);
         formPanel.add(tfLastName);
 
-        lbWelcome= new JLabel();
+        lbWelcome = new JLabel();
         lbWelcome.setFont(mainFont);
 
         JButton btnOK = new JButton("OK");
         btnOK.setFont(mainFont);
-        btnOK.addActionListener(new ActionListener(){
+        btnOK.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -41,7 +43,7 @@ public class MainFrame extends JFrame{
                 String lastName = tfLastName.getText();
                 lbWelcome.setText("Welcome " + firstName);
             }
-            
+
         });
 
         JButton btnClear = new JButton("Clear");
@@ -55,7 +57,7 @@ public class MainFrame extends JFrame{
                 tfLastName.setText("");
                 lbWelcome.setText("");
             }
-            
+
         });
 
         JPanel buttonsPanel = new JPanel();
@@ -72,7 +74,6 @@ public class MainFrame extends JFrame{
 
         add(mainPanel);
 
-
         setTitle("Sign in");
         setSize(500, 600);
         setMinimumSize(new Dimension(300, 400));
@@ -84,5 +85,5 @@ public class MainFrame extends JFrame{
         MainFrame myFrame = new MainFrame();
         myFrame.initialize();
     }
-    
+
 }
