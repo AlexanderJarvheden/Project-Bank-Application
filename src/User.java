@@ -17,12 +17,18 @@ import java.util.Map;
 public class User {
     private String id;
     private String name;
+    private String password;
     private Map<String, Account> userAccounts;
 
-    public User(String id, String name) {
+    public User(String id, String name, String password) {
         this.id = id;
         this.name = name;
+        this.password = password;
         this.userAccounts = new HashMap<>();
+    }
+
+    public String getPassword() {
+        return this.password;
     }
 
     public String getId() {

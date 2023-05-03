@@ -1,5 +1,11 @@
 package src;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,6 +28,7 @@ public class Bank {
     private Map<String, Account> accounts;
     private Map<String, User> users;
     private int accountNumberCounter = 0;
+    private static final String USERS_FILE_PATH = "src/users.txt";
 
     public Bank(String clearingNumber) {
         this.clearingNumber = clearingNumber;
@@ -30,12 +37,61 @@ public class Bank {
         this.totalCapitalLoanedOut = 0;
         this.accounts = new HashMap<String, Account>();
         this.users = new HashMap<String, User>();
+        loadUsersFromFile();
     }
 
-    public User createUser(String id, String name) {
-        User newUser = new User(id, name);
-        users.put(id, newUser);
-        return newUser;
+    public void saveUsersToFile() {
+        try {
+            File file = new File(USERS_FILE_PATH);
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            PrintWriter writer = new PrintWriter(new FileWriter(file));
+            for (User user : users.values()) {
+                writer.println(user.getId() + "," + user.getName());
+            }
+            writer.close();
+        } catch (IOException e) {
+            System.out.println("Failed to save users to file.");
+            e.printStackTrace();
+        }
+    }
+
+    public void loadUsersFromFile() {
+        try (BufferedReader reader = new BufferedReader(new FileReader(USERS_FILE_PATH))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] fields = line.split(",");
+                String id = fields[0];
+                String name = fields[1];
+                String password = fields[2];
+                createUser(id, name, password);
+            }
+        } catch (IOException e) {
+            System.out.println("Failed to load users from file.");
+            e.printStackTrace();
+        }
+    }
+
+    public User login(String userId, String password) {
+        User user = getUser(userId);
+        if (user != null && user.getPassword().equals(password)) {
+            return user;
+        } else {
+            return null;
+        }
+    }
+
+    public void createUser(String userId, String name, String password) {
+        User newUser = new User(userId, name, password);
+        this.users.put(userId, newUser);
+        try {
+            FileWriter writer = new FileWriter("users.txt", true);
+            writer.write(userId + "," + name + "," + password + "\n");
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public User getUser(String id) {
