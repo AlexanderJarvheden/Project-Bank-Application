@@ -5,40 +5,46 @@ import {COLOR, FONT, SIZES} from "../../constants/theme";
 import axios from 'axios';
 
 const StockMarketTab = () => {
-  const [popularStocks, setPopularStocks] = useState([]);
-  const [searchResults, setSearchResults] = useState([]);
-  const [searchText, setSearchText] = useState('');
-  const [balance, setBalance] = useState(10000);
-  const [portfolio, setPortfolio] = useState([]);
+const apiKey = 'YOUR_API_KEY';
+const popularStockSymbols = ['AAPL', 'GOOGL', 'MSFT', 'AMZN', 'TSLA', 'FB', 'BRK-B', 'JPM', 'JNJ', 'V'];
 
-  const apiKey = 'YOUR_API_KEY';
-  const popularStockSymbols = ['AAPL', 'GOOGL', 'MSFT', 'AMZN', 'TSLA', 'FB', 'BRK-B', 'JPM', 'JNJ', 'V'];
+const [popularStocks, setPopularStocks] = useState([]);
+const [searchResults, setSearchResults] = useState([]);
+const [searchText, setSearchText] = useState('');
+const [balance, setBalance] = useState(10000);
+const [portfolio, setPortfolio] = useState([]);
 
+  // Fetch popular stocks on component mount
   useEffect(() => {
     const fetchPopularStocks = async () => {
-      const promises = popularStockSymbols.map(symbol =>
-        axios.get(`https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${apiKey}`),
+      const promises = popularStockSymbols.map((symbol) =>
+        axios.get(
+          `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${apiKey}`
+        )
       );
 
       const results = await Promise.all(promises);
-      const stocks = results.map(res => res.data['Global Quote']);
+      const stocks = results.map((res) => res.data["Global Quote"]);
       setPopularStocks(stocks);
     };
 
     fetchPopularStocks();
   }, []);
 
+  // Search stocks based on input
   const searchStocks = async () => {
     const response = await axios.get(
-      `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${searchText}&apikey=${apiKey}`,
+      `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${searchText}&apikey=${apiKey}`
     );
     setSearchResults(response.data.bestMatches);
   };
 
+  // Buy stock functionality
   const buyStock = (symbol, price) => {
     // Implement your buy stock logic here
   };
 
+  // Sell stock functionality
   const sellStock = (symbol, price) => {
     // Implement your sell stock logic here
   };
@@ -51,13 +57,13 @@ const StockMarketTab = () => {
       </View>
       <TextInput
         style={styles.searchInput}
-        onChangeText={text => setSearchText(text)}
+        onChangeText={(text) => setSearchText(text)}
         onSubmitEditing={searchStocks}
         value={searchText}
         placeholder="Search for stocks"
       />
       <ScrollView>
-        {searchText === '' && (
+        {searchText === "" && (
           <View>
             <Text style={styles.sectionTitle}>Popular Stocks</Text>
             {popularStocks.map((stock, index) => (
@@ -67,8 +73,18 @@ const StockMarketTab = () => {
                   <ListItem.Title style={styles.stockText}>{stock && stock['01. symbol']}</ListItem.Title>
                   <ListItem.Subtitle style={styles.stockInfo}>${stock && parseFloat(stock['05. price']).toFixed(2)}</ListItem.Subtitle>
                 </ListItem.Content>
-                <Button title="Buy" onPress={() => buyStock(stock['01. symbol'], stock['05. price'])} />
-                <Button title="Sell" onPress={() => sellStock(stock['01. symbol'], stock['05. price'])} />
+                <Button
+                  title="Buy"
+                  onPress={() =>
+                    buyStock(stock["01. symbol"], stock["05. price"])
+                  }
+                />
+                <Button
+                  title="Sell"
+                  onPress={() =>
+                    sellStock(stock["01. symbol"], stock["05. price"])
+                  }
+                />
               </ListItem>
             ))}
           </View>
