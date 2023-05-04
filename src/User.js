@@ -1,9 +1,17 @@
 class User {
 
-    constructor(id, name) {
+    constructor(id, name, password) {
         this.id = id;
         this.name = name;
+        this.password = password;
         this.userAccounts = new Map();
+    }
+
+    signIn(id, password){
+        if(id == this.id && password == this.password){
+            return true;
+        }
+        return false;
     }
 
     getId() {
@@ -26,3 +34,5 @@ class User {
         this.userAccounts.delete(accountNumber);
     }
 }
+
+export default User;
