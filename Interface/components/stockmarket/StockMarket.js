@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, ScrollView, TextInput, Text } from 'react-native';
 import { ListItem, Icon, Button } from 'react-native-elements';
+import {COLOR, FONT, SIZES} from "../../constants/theme";
 import axios from 'axios';
 
 const StockMarketTab = () => {
@@ -60,11 +61,11 @@ const StockMarketTab = () => {
           <View>
             <Text style={styles.sectionTitle}>Popular Stocks</Text>
             {popularStocks.map((stock, index) => (
-              <ListItem key={index} bottomDivider>
+              <ListItem key={index} bottomDivider containerStyle={styles.listItemContainer}>
                 <ListItem.Content>
                   {/* <ListItem.Title>{stock['01. symbol']}</ListItem.Title> */}
-                  <ListItem.Title>{stock && stock['01. symbol']}</ListItem.Title>
-                  <ListItem.Subtitle>${stock && parseFloat(stock['05. price']).toFixed(2)}</ListItem.Subtitle>
+                  <ListItem.Title style={styles.stockText}>{stock && stock['01. symbol']}</ListItem.Title>
+                  <ListItem.Subtitle style={styles.stockInfo}>${stock && parseFloat(stock['05. price']).toFixed(2)}</ListItem.Subtitle>
                 </ListItem.Content>
                 <Button title="Buy" onPress={() => buyStock(stock['01. symbol'], stock['05. price'])} />
                 <Button title="Sell" onPress={() => sellStock(stock['01. symbol'], stock['05. price'])} />
@@ -73,74 +74,84 @@ const StockMarketTab = () => {
           </View>
         )}
         {searchText !== '' && (
-          <View>
+          <View >
             <Text style={styles.sectionTitle}>Search Results</Text>
-            {searchResults.map((stock,index) => (
-            <ListItem key={index} bottomDivider>
+            {searchResults.map((stock, index) => (
+              <ListItem key={index} bottomDivider containerStyle={styles.listItemContainer}>
                 <ListItem.Content>
-                    <ListItem.Title>{stock['1. symbol']}</ListItem.Title>
-                    <ListItem.Subtitle>{stock['2. name']}</ListItem.Subtitle>
-            </ListItem.Content>
-<Button
-title="Buy"
-onPress={() => buyStock(stock['1. symbol'], stock['2. name'])}
-/>
-<Button
-title="Sell"
-onPress={() => sellStock(stock['1. symbol'], stock['2. name'])}
-/>
-</ListItem>
-))}
-</View>
-)}
-<View>
-<Text style={styles.sectionTitle}>My Portfolio</Text>
-{portfolio.map((stock, index) => (
-<ListItem key={index} bottomDivider>
-<ListItem.Content>
-<ListItem.Title>{stock.symbol}</ListItem.Title>
-<ListItem.Subtitle>
-{stock.shares} shares @ ${parseFloat(stock.price).toFixed(2)}
-</ListItem.Subtitle>
-</ListItem.Content>
-<Button title="Sell" onPress={() => sellStock(stock.symbol, stock.price)} />
-</ListItem>
-))}
-</View>
-</ScrollView>
-</View>
-);
+                  <ListItem.Title style={styles.stockText}>{stock['1. symbol']}</ListItem.Title>
+                  <ListItem.Subtitle style={styles.stockInfo}>{stock['2. name']}</ListItem.Subtitle>
+                </ListItem.Content>
+                <Button
+                  title="Buy"
+                  onPress={() => buyStock(stock['1. symbol'], stock['2. name'])}
+                />
+                <Button
+                  title="Sell"
+                  onPress={() => sellStock(stock['1. symbol'], stock['2. name'])}
+                />
+              </ListItem>
+            ))}
+          </View>
+        )}
+        <View>
+          <Text style={styles.sectionTitle}>My Portfolio</Text>
+          {portfolio.map((stock, index) => (
+            <ListItem key={index} bottomDivider>
+              <ListItem.Content>
+                <ListItem.Title>{stock.symbol}</ListItem.Title>
+                <ListItem.Subtitle>
+                  {stock.shares} shares @ ${parseFloat(stock.price).toFixed(2)}
+                </ListItem.Subtitle>
+              </ListItem.Content>
+              <Button title="Sell" onPress={() => sellStock(stock.symbol, stock.price)} />
+            </ListItem>
+          ))}
+        </View>
+      </ScrollView>
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
-container: {
-flex: 1,
-paddingTop: 20,
-},
-balanceContainer: {
-flexDirection: 'row',
-alignItems: 'center',
-paddingHorizontal: 10,
-marginBottom: 10,
-},
-balanceText: {
-fontSize: 18,
-fontWeight: 'bold',
-marginLeft: 5,
-},
-searchInput: {
-height: 40,
-borderColor: 'gray',
-borderWidth: 1,
-paddingLeft: 8,
-marginBottom: 10,
-},
-sectionTitle: {
-fontSize: 20,
-fontWeight: 'bold',
-paddingLeft: 10,
-paddingBottom: 5,
-},
+  container: {
+    flex: 1,
+    paddingTop: 20,
+  },
+  balanceContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    marginBottom: 10,
+  },
+  balanceText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginLeft: 5,
+  },
+  searchInput: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    paddingLeft: 8,
+    marginBottom: 10,
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    paddingLeft: 10,
+    paddingBottom: 5,
+  },
+  listItemContainer: {
+    backgroundColor: 'violet'
+  },
+  stockText: {
+    fontFamily: FONT.medium
+  },
+  stockInfo: {
+    fontFamily: FONT.regular,
+    fontSize: SIZES.small
+  }
 });
 
 export default StockMarketTab;
