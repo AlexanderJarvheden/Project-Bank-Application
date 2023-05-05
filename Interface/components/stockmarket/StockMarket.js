@@ -15,7 +15,7 @@ const [balance, setBalance] = useState(10000);
 const [portfolio, setPortfolio] = useState([]);
 
   // Fetch popular stocks on component mount
-  useEffect(() => {
+  /*useEffect(() => {
     const fetchPopularStocks = async () => {
       const promises = popularStockSymbols.map((symbol) =>
         axios.get(
@@ -29,7 +29,67 @@ const [portfolio, setPortfolio] = useState([]);
     };
 
     fetchPopularStocks();
-  }, []);
+  }, []);*/
+
+  const fetchPopularStocks = async () => {
+    const fetchStock = async (symbol) => {
+      try {
+        const response = await axios.get(`https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${apiKey}`);
+        return response.data['Global Quote'];
+      } catch (error) {
+        console.error(`Error fetching stock: ${symbol}`, error);
+        return null;
+      }
+    };
+  
+    const fetchWithRetry = async (symbol, retries = 3) => {
+      for (let i = 0; i < retries; i++) {
+        const stock = await fetchStock(symbol);
+        if (stock) return stock;
+      }
+      return null;
+    };
+  
+    const promises = popularStockSymbols.map((symbol) => fetchWithRetry(symbol));
+    const results = await Promise.all(promises);
+    const stocks = results.filter((stock) => stock !== null);
+    setPopularStocks(stocks);
+  };
+  
+  
+ /*const fetchPopularStocks = async () => {
+    const promises = popularStockSymbols.map(symbol =>
+      axios.get(`https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${apiKey}`),
+    );
+  
+    const results = await Promise.all(promises);
+    const stocks = results
+      .map(res => res.data['Global Quote'])
+      .filter(stock => Object.keys(stock).length > 0); // Filter out stocks with missing data
+    setPopularStocks(stocks);
+  }*/
+
+  /*const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+  const fetchPopularStocks = async () => {
+    const stocks = [];
+  
+    for (const symbol of popularStockSymbols) {
+      try {
+        const response = await axios.get(
+          `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${apiKey}`
+        );
+        const stockData = response.data['Global Quote'];
+        if (Object.keys(stockData).length > 0) {
+          stocks.push(stockData);
+        }
+      } catch (error) {
+        console.error(`Error fetching stock data for ${symbol}:`, error);
+      }
+      await delay(15000); // Wait for 15 seconds between requests to stay within rate limits
+    }
+
+    setPopularStocks(stocks);
+  };  */
 
   // Search stocks based on input
   const searchStocks = async () => {
