@@ -1,6 +1,7 @@
-const fs = require('fs');
-const User = require('./User'); // Make sure you have the User class in a separate file and import it
-const Account = require('./Account');
+// const fs = require('fs');
+// const User = require('./User'); // Make sure you have the User class in a separate file and import it
+// const Account = require('./Account');
+import User from "../src/User"
 
 class Bank {
     constructor(clearingNumber) {
@@ -11,41 +12,48 @@ class Bank {
         this.accounts = new Map();
         this.users = new Map();
         this.accountNumberCounter = 0;
-        this.USERS_FILE_PATH = 'src/users.txt';
-        this.loadUsersFromFile();
+        // this.USERS_FILE_PATH = 'src/users.txt';
+        // this.loadUsersFromFile();
+        patientZero = new User("021101", "Alexander Järvheden", "123");
+        this.users.set(patientZero.getId(), patientZero);
     }
 
-    saveUsersToFile() {
-        try {
-            if (!fs.existsSync(this.USERS_FILE_PATH)) {
-                fs.writeFileSync(this.USERS_FILE_PATH, '');
-            }
-            const usersData = Array.from(this.users.values()).map((user) => {
-                return `${user.getId()},${user.getName()},${user.getPassword()}`;
-            }).join('\n');
-            fs.writeFileSync(this.USERS_FILE_PATH, usersData);
-        } catch (e) {
-            console.log('Failed to save users to file.');
-            console.error(e);
-        }
+    newUser(personalNumber, password, name) {
+        newUser = new User(personalNumber, name, password)
+        this.users.set(personalNumber, newUser); // Saves the user in the database and gets called by its personalnumber
     }
 
-    loadUsersFromFile() {
-        try {
-            const fileContents = fs.readFileSync(this.USERS_FILE_PATH, 'utf8');
-            const lines = fileContents.trim().split('\n');
-            for (const line of lines) {
-                const fields = line.split(',');
-                const id = fields[0];
-                const name = fields[1];
-                const password = fields[2];
-                this.createUser(id, name, password);
-            }
-        } catch (e) {
-            console.log('Failed to load users from file.');
-            console.error(e);
-        }
-    }
+    // saveUsersToFile() {
+    //     try {
+    //         if (!fs.existsSync(this.USERS_FILE_PATH)) {
+    //             fs.writeFileSync(this.USERS_FILE_PATH, '');
+    //         }
+    //         const usersData = Array.from(this.users.values()).map((user) => {
+    //             return `${user.getId()},${user.getName()},${user.getPassword()}`;
+    //         }).join('\n');
+    //         fs.writeFileSync(this.USERS_FILE_PATH, usersData);
+    //     } catch (e) {
+    //         console.log('Failed to save users to file.');
+    //         console.error(e);
+    //     }
+    // }
+
+    // loadUsersFromFile() {
+    //     try {
+    //         const fileContents = fs.readFileSync(this.USERS_FILE_PATH, 'utf8');
+    //         const lines = fileContents.trim().split('\n');
+    //         for (const line of lines) {
+    //             const fields = line.split(',');
+    //             const id = fields[0];
+    //             const name = fields[1];
+    //             const password = fields[2];
+    //             this.createUser(id, name, password);
+    //         }
+    //     } catch (e) {
+    //         console.log('Failed to load users from file.');
+    //         console.error(e);
+    //     }
+    // }
 
     login(userId, password) {
         const user = this.getUser(userId);
