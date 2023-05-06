@@ -31,6 +31,11 @@ const JobDetails = () => {
   }, []);
 
   const [activeTab, setActiveTab] = useState(tabs[0]);
+  const refresh = () => {
+    setAccounts([]);
+    setActiveTab(tabs[0]);
+    setIsSignedIn(false);
+  };
 
   const displayTabContent = () => {
     switch (activeTab) {
@@ -42,7 +47,8 @@ const JobDetails = () => {
           title="Stock Market"
         />
       case "Sign out":
-        return setIsSignedIn(false)
+        refresh();
+        break;
       default:
         break;
     }
@@ -83,8 +89,8 @@ const JobDetails = () => {
               </TouchableOpacity>
             </View>
             {showCreateNewUser && (
-            <CreateNewUser Bank={ceriseBank} created = {setShowCreateNewUser}/>
-          )}
+              <CreateNewUser Bank={ceriseBank} created={setShowCreateNewUser} />
+            )}
           </View>
         </ScrollView>
       )}
@@ -94,4 +100,3 @@ const JobDetails = () => {
 }
 
 export default JobDetails
-
