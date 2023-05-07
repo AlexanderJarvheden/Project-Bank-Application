@@ -8,6 +8,7 @@ import StockMarketTab from "../components/stockmarket/StockMarket";
 import Tabs from "../components/jobdetails/tabs/Tabs";
 import Bank from "../src/Bank";
 import CreateNewUser from "../components/signin/createNewUser";
+import User from "../src/User";
 
 
 const tabs = ["Accounts", "Transfer", "Stock Market", "Loans", "Sign out"];
@@ -17,8 +18,15 @@ const JobDetails = () => {
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [accounts, setAccounts] = useState([]);
   const [showCreateNewUser, setShowCreateNewUser] = useState(false);
+  // const [userSignedIn, setUserSignedIn] = useState(User);
 
   const ceriseBank = new Bank(1234);
+  
+  const showAllUsers = () => {
+    const allUsers = ceriseBank.getAllUsers();
+    console.log(allUsers);
+  }
+
 
   useEffect(() => {
     // Fetch the list of accounts from your database or API
@@ -42,6 +50,9 @@ const JobDetails = () => {
       case "Accounts":
         return <AccountScreen
           title="Accounts" />
+      case "Transfer":
+        showAllUsers();
+        break;
       case "Stock Market":
         return <StockMarketTab
           title="Stock Market"
@@ -88,9 +99,10 @@ const JobDetails = () => {
                 <Text style={{ color: 'white', fontSize: 16, fontFamily: 'Arial', textAlign: 'center' }}>New user? Create an account</Text>
               </TouchableOpacity>
             </View>
-            {showCreateNewUser && (
+            {/* {showCreateNewUser && (
               <CreateNewUser Bank={ceriseBank} created={setShowCreateNewUser} />
-            )}
+            )} */}
+            <CreateNewUser Bank={ceriseBank} created={setShowCreateNewUser} />
           </View>
         </ScrollView>
       )}

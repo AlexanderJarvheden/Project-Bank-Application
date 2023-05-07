@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { COLORS } from '../../constants';
-import { Link, Route } from 'expo-router';
+import { Stack, Link, Route } from 'expo-router';
 import { useNavigation } from '@react-navigation/native';
 import CreateNewUser from './createNewUser';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -15,18 +15,9 @@ const SignIn = ({ Bank, onSignIn }) => {
       onSignIn(true)
     }
     else {
-      onSignIn(false);
       Alert.alert('Error', 'Invalid Personal number or password.');
+      onSignIn(false);
     }
-  };
-
-  const navigation = useNavigation();
-  const Stack = createStackNavigator();
-
-  const handleCreateNewUser = () => {
-    return(
-      <Stack.Screen name="CreateNewUser" component={CreateNewUser} />
-    )
   };
 
   return (
@@ -50,12 +41,7 @@ const SignIn = ({ Bank, onSignIn }) => {
         <View style={styles.buttonContainer}>
           <Text style={styles.buttonText}>Sign in</Text>
         </View>
-        <TouchableOpacity onPress={handleCreateNewUser}>
-          <Text>Create new user</Text>
-        </TouchableOpacity>
       </TouchableOpacity>
-
-      <Stack.Screen name="CreateNewUser" component={CreateNewUser} />
     </View>
   );
 };
