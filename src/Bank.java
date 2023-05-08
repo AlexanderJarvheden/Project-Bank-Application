@@ -1,5 +1,6 @@
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -26,7 +27,8 @@ public class Bank {
     private Map<String, User> users;
     private int accountNumberCounter = 0;
     private int cardAccountNumberCounter = 0;
-    private static final String USERS_FILE_PATH = "src/users.txt";
+    private final String USERS_FILE = "src/users.txt";
+    private final String ACCOUNTS_FILE = "src/accounts.txt";
 
     public Bank(String clearingNumber) {
         this.accounts = new HashMap<>();
@@ -37,7 +39,7 @@ public class Bank {
 
     public void saveUsersToFile() {
         try {
-            File file = new File(USERS_FILE_PATH);
+            File file = new File(USERS_FILE);
             if (!file.exists()) {
                 file.createNewFile();
             }
@@ -61,7 +63,7 @@ public class Bank {
     }
 
     public void loadUsersFromFile() {
-        try (BufferedReader reader = new BufferedReader(new FileReader(USERS_FILE_PATH))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(USERS_FILE))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] fields = line.split(",");
@@ -120,21 +122,10 @@ public class Bank {
         if (user != null) {
             String accountNumber = generateAccountNumber(accountType);
             Account account;
-            switch (accountType) {
-                case "sparkonto":
-                    account = new SavingAccount(accountNumber, interestRate, user);
-                    break;
-                case "kreditkonto":
-                    account = new CardAccount(accountNumber, interestRate, generateUniqueCardAccountNumber(), user);
-                    break;
-                case "lånekonto":
-                    account = new LoanAccount(accountNumber, interestRate, user);
-                    break;
-                case "aktiekonto":
-                    account = new ShareAccount(accountNumber, interestRate, 0, 0.0, user);
-                    break;
-                default:
-                    return null;
+            if (accountType.equals("aktiekonto")) {
+                account = new ShareAccount(accountNumber, interestRate, 0, 0.0, user);
+            } else {
+                return null;
             }
             user.addAccount(account); // add account to user's account list
             try {
@@ -211,6 +202,50 @@ public class Bank {
         int uniqueNumber = cardAccountNumberCounter;
         cardAccountNumberCounter++;
         return String.format("%08d", uniqueNumber);
+    }
+
+    public void saveData() {
+        saveUsers();
+        saveAccounts();
+    }
+
+    public void saveUsers() {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(USERS_FILE))) {
+            for (User user : users.values()) {
+                writer.write(user.getId() + "," + user.getName() + "," + user.getPassword());
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            System.out.println("Error saving users: " + e.getMessage());
+        }
+    }
+
+    public void saveAccounts() {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(ACCOUNTS_FILE))) {
+            for (Account account : accounts.values()) {
+                String accountType = account.getClass().getSimpleName();
+                writer.write(accountType + "," + account.getAccountNumber() + "," + account.getAccountOwner().getId()
+                        + "," + account.getInterestRate());
+
+                if (account instanceof SavingAccount) {
+                    SavingAccount savingAccount = (SavingAccount) account;
+                    writer.write("," + savingAccount.getBalance());
+                } else if (account instanceof LoanAccount) {
+                    LoanAccount loanAccount = (LoanAccount) account;
+                    writer.write("," + loanAccount.getBalance());
+                } else if (account instanceof CardAccount) {
+                    CardAccount cardAccount = (CardAccount) account;
+                    writer.write("," + cardAccount.getCardNumber());
+                } else if (account instanceof ShareAccount) {
+                    ShareAccount shareAccount = (ShareAccount) account;
+                    writer.write("," + shareAccount.getNumShares() + "," + shareAccount.getSharePrice());
+                }
+
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            System.out.println("Error saving accounts: " + e.getMessage());
+        }
     }
 
 }
