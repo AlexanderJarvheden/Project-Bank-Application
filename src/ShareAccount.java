@@ -44,4 +44,10 @@ public class ShareAccount extends Account {
             System.out.println("Insufficient shares.");
         }
     }
+
+    public String getAccountInfo() {
+        return "Share Account," + getAccountNumber() + "," + getAccountOwner().getId() + "," + getInterestRate() + ","
+                + getNumShares() + "," + getSharePrice();
+    }
+
 }

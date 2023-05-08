@@ -9,4 +9,9 @@ public class LoanAccount extends Account {
         deposit(amount);
         System.out.println("Payment of " + amount + " made to Loan Account " + getAccountNumber() + ".");
     }
+
+    public String getAccountInfo() {
+        return "Loan Account," + getAccountNumber() + "," + getAccountOwner().getId() + "," + getInterestRate();
+    }
+
 }

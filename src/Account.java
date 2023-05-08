@@ -62,6 +62,10 @@ public abstract class Account {
         return false;
     }
 
+    public String getAccountInfo() {
+        return "Kontonummer: " + this.getAccountNumber() + ", Saldo: " + this.getBalance();
+    }
+
     public double getBalance() {
         return this.balance;
     }
