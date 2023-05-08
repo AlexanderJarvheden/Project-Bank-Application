@@ -1,5 +1,7 @@
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -17,13 +19,13 @@ public class User {
     private String id;
     private String name;
     private String password;
-    private Map<String, Account> userAccounts;
+    private List<Account> accounts;
 
     public User(String id, String name, String password) {
         this.id = id;
         this.name = name;
         this.password = password;
-        this.userAccounts = new HashMap<>();
+        this.accounts = new ArrayList<>();
     }
 
     public String getPassword() {
@@ -38,16 +40,15 @@ public class User {
         return name;
     }
 
-    public Map<String, Account> getUserAccounts() {
-        return userAccounts;
+    public List<Account> getAccounts() {
+        return accounts;
     }
 
     public void addAccount(Account account) {
-        userAccounts.put(account.getAccountNumber(), account);
+        accounts.add(account);
     }
 
-    public void removeAccount(String accountNumber) {
-        userAccounts.remove(accountNumber);
+    public void removeAccount(Account account) {
+        accounts.remove(account);
     }
-
 }
