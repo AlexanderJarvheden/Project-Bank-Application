@@ -137,6 +137,9 @@
 // const Account = require('./Account');
 import User from "../src/User"
 import Account from "./Account";
+// const fs = require('fs');
+import RNFS from 'react-native-fs';
+
 
 class Bank {
     constructor(clearingNumber) {
@@ -155,11 +158,35 @@ class Bank {
         this.accountTypes.set("Savings account", 0.75);
         this.accountTypes.set("Checkings account", '');
         this.accountTypes.set("Credit card", '');
+        this.loadUsersFromFile();
     }
 
     newUser(personalNumber, password, name) {
         newUser = new User(personalNumber, name, password);
         this.users.set(personalNumber, newUser); // Saves the user in the database and gets called by its personalnumber
+        this.saveUsersToFile();
+    }
+
+    async saveUsersToFile() {
+        const usersArray = Array.from(this.users.values());
+        const usersJson = JSON.stringify(usersArray, null, 2);
+        try {
+            await RNFS.writeFile(RNFS.DocumentDirectoryPath + '/users.json', usersJson);
+        } catch (e) {
+            console.log('Failed to save users to file.');
+            console.error(e);
+        }
+    }
+
+    async loadUsersFromFile() {
+        try {
+            const usersJson = await RNFS.readFile(RNFS.DocumentDirectoryPath + '/users.json', 'utf8');
+            const usersArray = JSON.parse(usersJson);
+            this.users = new Map(usersArray.map(u => [u.id, new User(u.id, u.name, u.password)]));
+        } catch (e) {
+            console.log('Failed to load users from file.');
+            console.error(e);
+        }
     }
 
     getAllUsers() {
@@ -223,11 +250,11 @@ class Bank {
 
     createAccount(accountType, user
         // , interestRate
-        ) {
+    ) {
         const accountNumber = this.generateUniqueAccountNumber();
         const newAccount = new Account(accountNumber, accountType, user
             // , interestRate
-            );
+        );
         this.accounts.set(accountNumber, newAccount);
         user.addAccount(newAccount);
         return newAccount;
@@ -271,7 +298,7 @@ class Bank {
         this.totalCapitalLoanedOut -= amount;
     }
 
-    getClearingNumber(){
+    getClearingNumber() {
         return this.clearingNumber;
     }
 }
