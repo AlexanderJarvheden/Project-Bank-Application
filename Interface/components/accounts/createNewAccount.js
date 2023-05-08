@@ -21,7 +21,7 @@ const CreateNewAccount = ({ bank, created, user }) => {
 
     return (
         <View style={styles.container}>
-            <Picker
+            {/* <Picker
                 style={styles.picker}
                 selectedValue={accountType}
                 onValueChange={(itemValue) => setAccountType(itemValue)}
@@ -31,7 +31,7 @@ const CreateNewAccount = ({ bank, created, user }) => {
                     <Picker.Item label={accountType} value={accountType} key={accountType} />
 
                 ))}
-            </Picker>
+            </Picker> */}
             <TextInput
                 style={{ ...styles.input, color: 'white' }}
                 placeholder="Name"
