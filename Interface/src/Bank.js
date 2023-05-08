@@ -136,6 +136,7 @@
 // const User = require('./User'); // Make sure you have the User class in a separate file and import it
 // const Account = require('./Account');
 import User from "../src/User"
+import Account from "./Account";
 
 class Bank {
     constructor(clearingNumber) {
@@ -150,6 +151,10 @@ class Bank {
         // this.loadUsersFromFile();
         patientZero = new User("021101", "Alexander Järvheden", "123");
         this.users.set(patientZero.getId(), patientZero);
+        this.accountTypes = new Map();
+        this.accountTypes.set("Savings account", 0.75);
+        this.accountTypes.set("Checkings account", '');
+        this.accountTypes.set("Credit card", '');
     }
 
     newUser(personalNumber, password, name) {
@@ -216,9 +221,13 @@ class Bank {
         return this.users.get(id);
     }
 
-    createAccount(accountType, user, interestRate) {
+    createAccount(accountType, user
+        // , interestRate
+        ) {
         const accountNumber = this.generateUniqueAccountNumber();
-        const newAccount = new Account(accountNumber, accountType, user, interestRate);
+        const newAccount = new Account(accountNumber, accountType, user
+            // , interestRate
+            );
         this.accounts.set(accountNumber, newAccount);
         user.addAccount(newAccount);
         return newAccount;
@@ -260,6 +269,10 @@ class Bank {
 
     removeCapitalLoanedOut(amount) {
         this.totalCapitalLoanedOut -= amount;
+    }
+
+    getClearingNumber(){
+        return this.clearingNumber;
     }
 }
 
