@@ -1,5 +1,6 @@
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -26,18 +27,20 @@ public class Bank {
     private Map<String, User> users;
     private int accountNumberCounter = 0;
     private int cardAccountNumberCounter = 0;
-    private static final String USERS_FILE_PATH = "src/users.txt";
+    private final String USERS_FILE = "src/users.txt";
+    private final String ACCOUNTS_FILE = "src/accounts.txt";
 
     public Bank(String clearingNumber) {
         this.accounts = new HashMap<>();
         this.users = new HashMap<>();
         this.clearingNumber = clearingNumber;
         loadUsersFromFile();
+        loadAccountsFromFile();
     }
 
     public void saveUsersToFile() {
         try {
-            File file = new File(USERS_FILE_PATH);
+            File file = new File(USERS_FILE);
             if (!file.exists()) {
                 file.createNewFile();
             }
@@ -61,7 +64,7 @@ public class Bank {
     }
 
     public void loadUsersFromFile() {
-        try (BufferedReader reader = new BufferedReader(new FileReader(USERS_FILE_PATH))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(USERS_FILE))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] fields = line.split(",");
@@ -82,6 +85,49 @@ public class Bank {
             }
         } catch (IOException e) {
             System.out.println("Failed to load users from file.");
+            e.printStackTrace();
+        }
+    }
+
+    public void loadAccountsFromFile() {
+        try (BufferedReader reader = new BufferedReader(new FileReader(ACCOUNTS_FILE))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                String accountType = parts[0];
+                String accountNumber = parts[1];
+                String userId = parts[2];
+                double interestRate = Double.parseDouble(parts[3]);
+                User accountOwner = getUser(userId);
+
+                if (accountOwner == null) {
+                    System.out.println("Error: User not found for account " + accountNumber);
+                    continue;
+                }
+
+                Account account = null;
+                if (accountType.equals("Saving Account")) {
+                    account = new SavingAccount(accountNumber, interestRate, accountOwner);
+                } else if (accountType.equals("Loan Account")) {
+                    account = new LoanAccount(accountNumber, interestRate, accountOwner);
+                } else if (accountType.equals("Card Account")) {
+                    String cardAccountNumber = parts[4];
+                    account = new CardAccount(accountNumber, interestRate, cardAccountNumber, accountOwner);
+                } else if (accountType.equals("Share Account")) {
+                    int numShares = Integer.parseInt(parts[4]);
+                    double sharePrice = Double.parseDouble(parts[5]);
+                    account = new ShareAccount(accountNumber, interestRate, numShares, sharePrice, accountOwner);
+                }
+
+                if (account != null) {
+                    accountOwner.addAccount(account);
+                    accounts.put(accountNumber, account);
+                } else {
+                    System.out.println("Error: Invalid account type " + accountType);
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Failed to load accounts from file.");
             e.printStackTrace();
         }
     }
@@ -115,41 +161,36 @@ public class Bank {
         return users.get(id);
     }
 
-    public Account createAccount(String accountType, String userId, double interestRate) {
-        User user = users.get(userId);
-        if (user != null) {
-            String accountNumber = generateAccountNumber(accountType);
-            Account account;
-            switch (accountType) {
-                case "sparkonto":
-                    account = new SavingAccount(accountNumber, interestRate, user);
-                    break;
-                case "kreditkonto":
-                    account = new CardAccount(accountNumber, interestRate, generateUniqueCardAccountNumber(), user);
-                    break;
-                case "lånekonto":
-                    account = new LoanAccount(accountNumber, interestRate, user);
-                    break;
-                case "aktiekonto":
-                    account = new ShareAccount(accountNumber, interestRate, 0, 0.0, user);
-                    break;
-                default:
-                    return null;
-            }
-            user.addAccount(account); // add account to user's account list
-            try {
-                FileWriter writer = new FileWriter("src/users.txt", true);
-                writer.write(accountNumber + "," + userId + "\n");
-                writer.close();
-                FileWriter accountWriter = new FileWriter("src/accounts.txt", true);
-                accountWriter.write(account.getAccountInfo() + "\n");
-                accountWriter.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return account;
+    public Account createAccount(String accountType, User accountOwner, double interestRate) {
+        String accountNumber = generateAccountNumber(accountType);
+        Account account = null;
+
+        if (accountType.equalsIgnoreCase("sparkonto")) {
+            account = new SavingAccount(accountNumber, interestRate, accountOwner);
+        } else if (accountType.equalsIgnoreCase("aktiekonto")) {
+            account = new ShareAccount(accountNumber, interestRate, 0, 0.0, accountOwner);
+        } else if (accountType.equalsIgnoreCase("kortkonto")) {
+            account = new CardAccount(accountNumber, interestRate, "1234567890123456", accountOwner);
+        } else if (accountType.equalsIgnoreCase("lånekonto")) {
+            account = new LoanAccount(accountNumber, interestRate, accountOwner);
+        } else {
+            return null;
         }
-        return null;
+
+        accountOwner.addAccount(account); // add account to user's account list
+
+        try {
+            FileWriter writer = new FileWriter("src/users.txt", true);
+            writer.write(accountNumber + "," + accountOwner.getId() + "\n"); // Updated line
+            writer.close();
+            FileWriter accountWriter = new FileWriter("src/accounts.txt", true);
+            accountWriter.write(account.getAccountInfo() + "\n");
+            accountWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return account;
     }
 
     public Account getAccount(String accountNumber) {
@@ -160,24 +201,27 @@ public class Bank {
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
                 String[] parts = line.split(",");
-                String num = parts[0];
-                String userId = parts[1];
-                double balance = Double.parseDouble(parts[2]);
+                if (parts.length < 4) { // Check if there are at least 4 parts in the line
+                    continue;
+                }
+                String accountType = parts[0];
+                String num = parts[1];
+                String userId = parts[2];
                 double interestRate = Double.parseDouble(parts[3]);
-                String accountType = parts[4];
 
                 if (num.equals(accountNumber)) {
                     User accountOwner = getUser(userId);
-                    if (accountType.equals("Sparkonto")) {
-                        return new SavingAccount(num, interestRate, balance, accountOwner);
-                    } else if (accountType.equals("Lånekonto")) {
-                        return new LoanAccount(num, interestRate, balance, accountOwner);
-                    } else if (accountType.equals("Kortkonto")) {
-                        int cardNum = Integer.parseInt(parts[5]);
-                        return new CardAccount(num, interestRate, cardNum, accountOwner);
-                    } else if (accountType.equals("Aktiekonto")) {
-                        int numShares = Integer.parseInt(parts[5]);
-                        double sharePrice = Double.parseDouble(parts[6]);
+
+                    if (accountType.equalsIgnoreCase("Saving Account")) {
+                        return new SavingAccount(num, interestRate, accountOwner);
+                    } else if (accountType.equalsIgnoreCase("Loan Account")) {
+                        return new LoanAccount(num, interestRate, accountOwner);
+                    } else if (accountType.equalsIgnoreCase("Card Account")) {
+                        String cardAccountNumber = parts[4];
+                        return new CardAccount(num, interestRate, cardAccountNumber, accountOwner);
+                    } else if (accountType.equalsIgnoreCase("Share Account")) {
+                        int numShares = Integer.parseInt(parts[4]);
+                        double sharePrice = Double.parseDouble(parts[5]);
                         return new ShareAccount(num, interestRate, numShares, sharePrice, accountOwner);
                     }
                 }
@@ -213,4 +257,41 @@ public class Bank {
         return String.format("%08d", uniqueNumber);
     }
 
+    public void saveData() {
+        saveUsersToFile();
+        saveAccountsToFile();
+    }
+
+    public void saveUsers() {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(USERS_FILE))) {
+            for (User user : users.values()) {
+                writer.write(user.getId() + "," + user.getName() + "," + user.getPassword());
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            System.out.println("Error saving users: " + e.getMessage());
+        }
+    }
+
+    public void saveAccountsToFile() {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(ACCOUNTS_FILE))) {
+            for (Account account : accounts.values()) {
+                String accountType = account.getClass().getSimpleName();
+                writer.write(accountType + "," + account.getAccountNumber() + "," + account.getAccountOwner().getId()
+                        + "," + account.getInterestRate());
+
+                if (account instanceof CardAccount) {
+                    CardAccount cardAccount = (CardAccount) account;
+                    writer.write("," + cardAccount.getCardAccountNumber());
+                } else if (account instanceof ShareAccount) {
+                    ShareAccount shareAccount = (ShareAccount) account;
+                    writer.write("," + shareAccount.getNumShares() + "," + shareAccount.getSharePrice());
+                }
+
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            System.out.println("Error saving accounts: " + e.getMessage());
+        }
+    }
 }
