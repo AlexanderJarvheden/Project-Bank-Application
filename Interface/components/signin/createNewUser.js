@@ -1,22 +1,21 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { COLORS } from '../../constants';
-import { Stack, Link, Route } from 'expo-router';
-import { useNavigation } from '@react-navigation/native';
-import CreateNewUser from './createNewUser';
-import { createStackNavigator } from '@react-navigation/stack';
 
-const SignIn = ({ Bank, onSignIn }) => {
+const CreateNewUser = ({Bank, created}) => {
   const [personalNumber, setpersonalNumber] = useState('');
+  const [name, setName] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSignIn = () => {
-    if (Bank.users.has(personalNumber) && Bank.users.get(personalNumber).signIn(personalNumber, password)) {
-      onSignIn(personalNumber);
+  const handleCreateNewUser = () => {
+    if(!Bank.users.has(personalNumber)){
+        Bank.newUser(personalNumber, password, name);
+        Alert.alert('Successful!', 'Welcome ' + name);
+        created(false)
     }
-    else {
-      Alert.alert('Error', 'Invalid Personal number or password.');
-      // onSignIn(false);
+    else{
+      Alert.alert('Error', 'User already exists');
+      created(true)
     }
   };
 
@@ -32,14 +31,22 @@ const SignIn = ({ Bank, onSignIn }) => {
       />
       <TextInput
         style={{ ...styles.input, color: 'white' }}
+        placeholder="Name"
+        onChangeText={setName}
+        value={name}
+        autoCapitalize="words"
+        keyboardType="default"
+      />
+      <TextInput
+        style={styles.input}
         placeholder="Password"
         onChangeText={setPassword}
         value={password}
         secureTextEntry
       />
-      <TouchableOpacity style={styles.button} onPress={handleSignIn}>
+      <TouchableOpacity style={styles.button} onPress={handleCreateNewUser}>
         <View style={styles.buttonContainer}>
-          <Text style={styles.buttonText}>Sign in</Text>
+          <Text style={styles.buttonText}>Create user</Text>
         </View>
       </TouchableOpacity>
     </View>
@@ -81,4 +88,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SignIn;
+export default CreateNewUser;
