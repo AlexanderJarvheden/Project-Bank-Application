@@ -1,4 +1,7 @@
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,15 +24,19 @@ import java.util.List;
 public abstract class Account {
 
     private String accountNumber;
+    private String accountType;
     private double balance;
     private double interestRate;
     private List<String> transactionHistory;
+    private User accountOwner;
 
-    public Account(String accountNumber, double interestRate) {
+    public Account(String accountNumber, String accountType, User accountOwner, double interestRate) {
         this.accountNumber = accountNumber;
         this.interestRate = interestRate;
+        this.accountType = accountType;
         this.transactionHistory = new ArrayList<>();
         this.balance = 0;
+        this.accountOwner = accountOwner;
     }
 
     public void deposit(double amount) {
@@ -69,5 +76,29 @@ public abstract class Account {
 
     public String getAccountNumber() {
         return accountNumber;
+    }
+
+    public User getAccountOwner() {
+        return accountOwner;
+    }
+
+    public void setAccountOwner(User accountOwner) {
+        this.accountOwner = accountOwner;
+    }
+
+    public String getAccountType() {
+        return accountType;
+    }
+
+    public void setAccountType(String accountType) {
+        this.accountType = accountType;
+    }
+
+    public double getInterestRate() {
+        return interestRate;
+    }
+
+    public void setInterestRate(double interestRate) {
+        this.interestRate = interestRate;
     }
 }
