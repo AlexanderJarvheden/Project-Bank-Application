@@ -1,29 +1,11 @@
-// import React from 'react';
-// import { FlatList, Text, View } from 'react-native';
-
-// const AccountsList = ({ accounts }) => {
-//   return (
-//     <FlatList
-//       data={accounts}
-//       renderItem={({ item }) => (
-//         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 10 }}>
-//           <Text style={{ fontSize: 18 }}>{item.name}</Text>
-//           <Text style={{ fontSize: 18 }}>{item.balance}</Text>
-//         </View>
-//       )}
-//       keyExtractor={item => item.id.toString()}
-//       contentContainerStyle={{ paddingHorizontal: 20 }}
-//     />
-//   );
-// };
-
-// export default AccountsList;
-
-import React from 'react';
-import { View, Text, FlatList } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
 import { COLORS, FONT } from '../../constants/theme';
+import CreateNewAccount from './createNewAccount';
 
-const AccountScreen = () => {
+const AccountScreen = ({bank, signedInUser}) => {
+  const[createAccount, setCreateAccount] = useState(false);
+
   const accounts = [
     { id: 1, name: 'Checking', balance: 2000 },
     { id: 2, name: 'Savings', balance: 5000 },
@@ -37,6 +19,11 @@ const AccountScreen = () => {
     </View>
   );
 
+  const handleCreateNewAccount = () => (
+    setCreateAccount(true)
+  );
+
+
   return (
     <View style={{ flex: 1, backgroundColor: COLORS.red }}>
       <FlatList
@@ -44,8 +31,37 @@ const AccountScreen = () => {
         renderItem={renderAccount}
         keyExtractor={item => item.id.toString()}
       />
+      <TouchableOpacity style={styles.button} onPress={handleCreateNewAccount}>
+        <View style={styles.buttonContainer}>
+          <Text style={styles.buttonText}>Create new account</Text>
+        </View>
+      </TouchableOpacity>
+      {createAccount && (
+        <CreateNewAccount bank={bank} created={setCreateAccount} user={signedInUser}/>
+      )}
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+button: {
+  width: '100%',
+  alignItems: 'center',
+  marginTop: 20,
+},
+buttonContainer: {
+  backgroundColor: COLORS.red,
+  paddingVertical: 10,
+  paddingHorizontal: 20,
+  borderRadius: 10,
+  elevation: 3,
+},
+buttonText: {
+  color: COLORS.lightWhite,
+  fontSize: 18,
+  fontWeight: 'bold',
+  textAlign: 'center',
+},
+});
 
 export default AccountScreen;
