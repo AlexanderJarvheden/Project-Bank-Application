@@ -15,7 +15,7 @@ const [balance, setBalance] = useState(10000);
 const [portfolio, setPortfolio] = useState([]);
 
   // Fetch popular stocks on component mount
-  /*useEffect(() => {
+  useEffect(() => {
     const fetchPopularStocks = async () => {
       const promises = popularStockSymbols.map((symbol) =>
         axios.get(
@@ -29,8 +29,8 @@ const [portfolio, setPortfolio] = useState([]);
     };
 
     fetchPopularStocks();
-  }, []);*/
-
+  }, []);
+/*
   const fetchPopularStocks = async () => {
     const fetchStock = async (symbol) => {
       try {
@@ -55,7 +55,7 @@ const [portfolio, setPortfolio] = useState([]);
     const stocks = results.filter((stock) => stock !== null);
     setPopularStocks(stocks);
   };
-  
+  */
   
  /*const fetchPopularStocks = async () => {
     const promises = popularStockSymbols.map(symbol =>
