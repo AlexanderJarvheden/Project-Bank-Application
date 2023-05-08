@@ -16,16 +16,19 @@ import java.util.Map;
  */
 
 public class User {
+
     private String id;
     private String name;
     private String password;
-    private List<Account> accounts;
+    private List<String> accountNumbers; // Updated: Store account numbers instead of Account objects
+    private Map<String, Account> accounts;
 
     public User(String id, String name, String password) {
         this.id = id;
         this.name = name;
         this.password = password;
-        this.accounts = new ArrayList<>();
+        this.accountNumbers = new ArrayList<>(); // Updated: Initialize accountNumbers list
+        this.accounts = new HashMap<>();
     }
 
     public String getPassword() {
@@ -40,15 +43,21 @@ public class User {
         return name;
     }
 
-    public List<Account> getAccounts() {
-        return accounts;
+    public List<String> getAccountNumbers() { // Updated: Return account numbers instead of Account objects
+        return accountNumbers;
+    }
+
+    public Account getAccount(String accountNumber) { // New method: Get an Account object by account number
+        return accounts.get(accountNumber);
     }
 
     public void addAccount(Account account) {
-        accounts.add(account);
+        accountNumbers.add(account.getAccountNumber());
+        accounts.put(account.getAccountNumber(), account);
     }
 
     public void removeAccount(Account account) {
-        accounts.remove(account);
+        accountNumbers.remove(account.getAccountNumber()); // Updated: Remove account number from the list
+        accounts.remove(account.getAccountNumber()); // Updated: Remove account from the map
     }
 }

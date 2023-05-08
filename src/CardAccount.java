@@ -8,6 +8,10 @@ public class CardAccount extends Account {
         this.cardAccountNumber = cardAccountNumber;
     }
 
+    public String getCardAccountNumber() {
+        return cardAccountNumber;
+    }
+
     public void makePayment(double amount) {
         if (withdraw(amount)) {
             System.out.println("Payment of " + amount + " made from Card Account " + getAccountNumber() + ".");
@@ -15,4 +19,10 @@ public class CardAccount extends Account {
             System.out.println("Insufficient funds.");
         }
     }
+
+    public String getAccountInfo() {
+        return "Card Account," + getAccountNumber() + "," + getAccountOwner().getId() + "," + getInterestRate() + ","
+                + getCardAccountNumber();
+    }
+
 }
