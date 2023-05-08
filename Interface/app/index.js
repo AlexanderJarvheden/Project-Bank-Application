@@ -5,7 +5,7 @@ import { COLORS, SIZES } from '../constants';
 import React, { useState, useEffect } from 'react';
 import AccountScreen from "../components/accounts/AccountScreen";
 import StockMarketTab from "../components/stockmarket/StockMarket";
-import Tabs from "../components/jobdetails/tabs/Tabs";
+import Tabs from "../components/tabs/Tabs";
 import Bank from "../src/Bank";
 import CreateNewUser from "../components/signin/createNewUser";
 import User from "../src/User";
