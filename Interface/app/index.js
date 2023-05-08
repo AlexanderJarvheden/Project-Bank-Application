@@ -16,8 +16,10 @@ const tabs = ["Accounts", "Transfer", "Stock Market", "Loans", "Sign out"];
 const JobDetails = () => {
   // const router = useRouter();
   const [isSignedIn, setIsSignedIn] = useState(false);
+  const [signedInUser, setSignedInUser] = useState('');
   const [accounts, setAccounts] = useState([]);
   const [showCreateNewUser, setShowCreateNewUser] = useState(false);
+  const [activeUser, setActiveUser] = useState('');
   // const [userSignedIn, setUserSignedIn] = useState(User);
 
   const ceriseBank = new Bank(1234);
@@ -27,6 +29,10 @@ const JobDetails = () => {
     console.log(allUsers);
   }
 
+  const handleSignIn = (personalNumber) => {
+    setIsSignedIn(true);
+    setSignedInUser(personalNumber);
+  };
 
   useEffect(() => {
     // Fetch the list of accounts from your database or API
@@ -48,7 +54,7 @@ const JobDetails = () => {
   const displayTabContent = () => {
     switch (activeTab) {
       case "Accounts":
-        return <AccountScreen
+        return <AccountScreen bank={ceriseBank} signedInUser={ceriseBank.users.get(signedInUser)}
           title="Accounts" />
       case "Transfer":
         showAllUsers();
@@ -92,7 +98,7 @@ const JobDetails = () => {
 
           <View style={{ justifyContent: "center", alignItems: "center" }}>
             <Stack.Screen options={{ title: "Welcome to your bank", headerStyle: { backgroundColor: COLORS.red }, headerTitleStyle: { fontSize: 30, color: COLORS.white } }} />
-            <SignIn Bank={ceriseBank} onSignIn={setIsSignedIn} />
+            <SignIn Bank={ceriseBank} onSignIn={handleSignIn} />
             <View style={{ justifyContent: "center", alignItems: "center" }}>
 
               <TouchableOpacity onPress={() => setShowCreateNewUser(true)}>

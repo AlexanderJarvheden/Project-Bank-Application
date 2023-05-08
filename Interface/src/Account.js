@@ -1,12 +1,15 @@
 class Account {
 
-    constructor(accountNumber, accountType, accountOwner, interestRate) {
+    constructor(accountNumber, accountType, accountOwner
+        // , interestRate
+        ) {
         this.accountNumber = accountNumber;
         this.accountType = accountType;
         this.accountOwner = accountOwner;
         this.balance = 0;
-        this.interestRate = interestRate;
+        // this.interestRate = interestRate;
         this.transactionHistory = [];
+        
     }
 
     deposit(amount) {
@@ -48,3 +51,5 @@ class Account {
         return this.accountNumber;
     }
 }
+
+export default Account;

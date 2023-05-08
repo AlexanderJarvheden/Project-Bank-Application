@@ -12,11 +12,11 @@ const SignIn = ({ Bank, onSignIn }) => {
 
   const handleSignIn = () => {
     if (Bank.users.has(personalNumber) && Bank.users.get(personalNumber).signIn(personalNumber, password)) {
-      onSignIn(true)
+      onSignIn(personalNumber);
     }
     else {
       Alert.alert('Error', 'Invalid Personal number or password.');
-      onSignIn(false);
+      // onSignIn(false);
     }
   };
 
