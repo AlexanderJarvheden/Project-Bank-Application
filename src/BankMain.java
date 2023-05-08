@@ -1,6 +1,8 @@
 
 import java.util.Scanner;
 
+import java.util.Scanner;
+
 public class BankMain {
 
     public static void main(String[] args) {
@@ -36,14 +38,18 @@ public class BankMain {
                         String username = scanner.nextLine();
                         User user = bank.getUser(username);
                         if (user != null) {
-                            System.out.print("Ange kontotyp (t.ex. sparkonto, lönekonto): ");
+                            System.out.print("Ange kontotyp (sparkonto/aktiekonto/kortkonto/lånekonto): ");
                             String accountType = scanner.nextLine();
                             System.out.print("Ange räntesats (t.ex. 0.02 för 2%): ");
                             double interestRate = scanner.nextDouble();
                             scanner.nextLine();
                             Account createdAccount = bank.createAccount(accountType, user, interestRate);
-                            String accountNumber = createdAccount.getAccountNumber();
-                            System.out.println("Konto skapat med kontonummer: " + accountNumber);
+                            if (createdAccount != null) {
+                                String accountNumber = createdAccount.getAccountNumber();
+                                System.out.println("Konto skapat med kontonummer: " + accountNumber);
+                            } else {
+                                System.out.println("Kontotypen stöds inte av banken.");
+                            }
                         } else if (user == null) {
                             System.out.println("Användaren hittades inte.");
                         }

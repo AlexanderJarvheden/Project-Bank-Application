@@ -1,0 +1,4 @@
+SP0000000001,sparkonto,0.02,1000.0,1Kontonummer: SP0000000000, Saldo: 0.0Saving Account,SP0000000000,alex,0.02,0.0
+Card Account,KO0000000000,lol,0.02,1234567890123456Loan Account,LÅ0000000000,lol,0.0
+Saving Account,SP0000000001,oskar,0.02,0.0
+Saving Account,SP0000000000,oski,0.02,0.0

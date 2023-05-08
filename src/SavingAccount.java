@@ -1,12 +1,13 @@
 
 public class SavingAccount extends Account {
-    private double interestRate;
 
-    public SavingAccount(String accountNumber, double interestRate) {
-        super(accountNumber, interestRate);
+    public SavingAccount(String accountNumber, double interestRate, User accountOwner) {
+        super(accountNumber, "Saving Account", accountOwner, interestRate);
     }
 
-    public void calculateInterest() {
-        // Define method to calculate interest for SavingAccount
+    public String getAccountInfo() {
+        return "Saving Account," + getAccountNumber() + "," + getAccountOwner().getId() + "," + getInterestRate() + ","
+                + getBalance();
     }
+
 }

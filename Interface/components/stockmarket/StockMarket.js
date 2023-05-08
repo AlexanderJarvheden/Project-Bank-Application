@@ -111,7 +111,8 @@ const [portfolio, setPortfolio] = useState([]);
 
   return (
     <View style={styles.container}>
-      <View style={styles.balanceContainer}>
+      <View style={styles.content}>
+      <View style={styles.balanceContainer, styles.content}>
         <Icon name="account-balance-wallet" type="material" />
         <Text style={styles.balanceText}>Balance: ${balance.toFixed(2)}</Text>
       </View>
@@ -185,6 +186,7 @@ const [portfolio, setPortfolio] = useState([]);
           ))}
         </View>
       </ScrollView>
+      </View>
     </View>
   );
 };
@@ -193,6 +195,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 20,
+    flex: 1,
+    height: "100%", // Set a fixed height for the container
+    overflow: "scroll", // Allow content to be scrollable within the container
+  },
+  content: {
+    flexGrow: 1, // Make the content grow to fill the container
   },
   balanceContainer: {
     flexDirection: 'row',

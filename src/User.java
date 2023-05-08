@@ -1,5 +1,7 @@
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -14,16 +16,19 @@ import java.util.Map;
  */
 
 public class User {
+
     private String id;
     private String name;
     private String password;
-    private Map<String, Account> userAccounts;
+    private List<String> accountNumbers; // Updated: Store account numbers instead of Account objects
+    private Map<String, Account> accounts;
 
     public User(String id, String name, String password) {
         this.id = id;
         this.name = name;
         this.password = password;
-        this.userAccounts = new HashMap<>();
+        this.accountNumbers = new ArrayList<>(); // Updated: Initialize accountNumbers list
+        this.accounts = new HashMap<>();
     }
 
     public String getPassword() {
@@ -38,16 +43,21 @@ public class User {
         return name;
     }
 
-    public Map<String, Account> getUserAccounts() {
-        return userAccounts;
+    public List<String> getAccountNumbers() { // Updated: Return account numbers instead of Account objects
+        return accountNumbers;
+    }
+
+    public Account getAccount(String accountNumber) { // New method: Get an Account object by account number
+        return accounts.get(accountNumber);
     }
 
     public void addAccount(Account account) {
-        userAccounts.put(account.getAccountNumber(), account);
+        accountNumbers.add(account.getAccountNumber());
+        accounts.put(account.getAccountNumber(), account);
     }
 
-    public void removeAccount(String accountNumber) {
-        userAccounts.remove(accountNumber);
+    public void removeAccount(Account account) {
+        accountNumbers.remove(account.getAccountNumber()); // Updated: Remove account number from the list
+        accounts.remove(account.getAccountNumber()); // Updated: Remove account from the map
     }
-
 }
