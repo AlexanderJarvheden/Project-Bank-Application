@@ -1,4 +1,4 @@
-import { ScrollView, View, Text, SafeAreaView, TouchableOpacity } from "react-native";
+import { ScrollView, View, Text, SafeAreaView, TouchableOpacity, StyleSheet } from "react-native";
 import { Stack, Link } from 'expo-router'
 import SignIn from "../components/signin/signIn";
 import { COLORS, SIZES } from '../constants';
@@ -9,6 +9,7 @@ import Tabs from "../components/tabs/Tabs";
 import Bank from "../src/Bank";
 import CreateNewUser from "../components/signin/createNewUser";
 import User from "../src/User";
+import Database from '../src/DataBase';
 
 
 const tabs = ["Accounts", "Transfer", "Stock Market", "Loans", "Sign out"];
@@ -23,16 +24,22 @@ const JobDetails = () => {
   // const [userSignedIn, setUserSignedIn] = useState(User);
 
   const ceriseBank = new Bank(1234);
-  
+
   const showAllUsers = () => {
     const allUsers = ceriseBank.getAllUsers();
     console.log(allUsers);
   }
 
-  const handleSignIn = (personalNumber) => {
-    setIsSignedIn(true);
-    setSignedInUser(personalNumber);
+  const handleSignIn = async (personalNumber, password) => {
+    const user = await Database.getUser(personalNumber);
+    if (user && user.password === password) {
+      setIsSignedIn(true);
+      setSignedInUser(personalNumber);
+    } else {
+      Alert.alert('Error', 'Invalid Personal number or password.');
+    }
   };
+  
 
   useEffect(() => {
     // Fetch the list of accounts from your database or API
@@ -109,6 +116,11 @@ const JobDetails = () => {
               <CreateNewUser Bank={ceriseBank} created={setShowCreateNewUser} />
             )} */}
             <CreateNewUser Bank={ceriseBank} created={setShowCreateNewUser} />
+            <TouchableOpacity style={styles.button} onPress={showAllUsers}>
+              <View style={styles.buttonContainer}>
+                <Text style={styles.buttonText}>List all accounts</Text>
+              </View>
+            </TouchableOpacity>
           </View>
         </ScrollView>
       )}
@@ -118,3 +130,12 @@ const JobDetails = () => {
 }
 
 export default JobDetails
+
+const styles = StyleSheet.create({
+  button: {
+    width: '100%',
+    alignItems: 'center',
+    marginTop: 20,
+  },
+
+})
