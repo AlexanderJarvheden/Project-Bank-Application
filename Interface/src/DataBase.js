@@ -7,12 +7,12 @@ class Database {
         console.error('Error: Trying to store a null/undefined value. Key:', key);
         return;
       }
-  
+
       await AsyncStorage.setItem(key, JSON.stringify(value));
     } catch (error) {
       console.error('Error storing user data:', error);
     }
-  }  
+  }
 
   static async getUser(personalNumber) {
     try {

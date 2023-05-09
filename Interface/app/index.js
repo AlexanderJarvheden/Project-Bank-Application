@@ -1,4 +1,4 @@
-import { ScrollView, View, Text, SafeAreaView, TouchableOpacity, StyleSheet } from "react-native";
+import { ScrollView, View, Text, SafeAreaView, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import { Stack, Link } from 'expo-router'
 import SignIn from "../components/signin/signIn";
 import { COLORS, SIZES } from '../constants';
@@ -10,6 +10,8 @@ import Bank from "../src/Bank";
 import CreateNewUser from "../components/signin/createNewUser";
 import User from "../src/User";
 import Database from '../src/DataBase';
+import LoanPlatformScreen from "../components/LoanPlatformScreen";
+
 
 const tabs = ["Accounts", "Transfer", "Stock Market", "Loans", "Sign out"];
 
@@ -19,7 +21,7 @@ const JobDetails = () => {
   const [accounts, setAccounts] = useState([]);
   const [showCreateNewUser, setShowCreateNewUser] = useState(false);
   const [activeUser, setActiveUser] = useState('');
-  
+
   const ceriseBank = new Bank(1234);
 
   const showAllUsers = () => {
@@ -66,8 +68,7 @@ const JobDetails = () => {
           title="Stock Market"
         />
       case "Loans":
-        // Show Loans tab content here
-        break;
+        return <LoanPlatformScreen bank={ceriseBank} user={ceriseBank.users.get(signedInUser)} />
       case "Sign out":
         refresh();
         break;
@@ -94,9 +95,10 @@ const JobDetails = () => {
       ) : (
         <ScrollView style={{ backgroundColor: COLORS.primary }}>
           <View style={{ justifyContent: "center", alignItems: "center" }}>
-            <Stack.Screen options={{ title: "Welcome to your bank", headerStyle: { backgroundColor: COLORS.red }, 
-                headerTitleStyle: { fontSize: 30, color: COLORS.white } 
-              }} 
+            <Stack.Screen options={{
+              title: "Welcome to your bank", headerStyle: { backgroundColor: COLORS.red },
+              headerTitleStyle: { fontSize: 30, color: COLORS.white }
+            }}
             />
             <SignIn Bank={ceriseBank} onSignIn={handleSignIn} />
             <View style={{ justifyContent: "center", alignItems: "center" }}>

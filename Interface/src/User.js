@@ -5,10 +5,11 @@ class User {
         this.name = name;
         this.password = password;
         this.userAccounts = new Map();
+        this.loans = new Map();
     }
 
-    signIn(id, password){
-        if(id == this.id && password == this.password){
+    signIn(id, password) {
+        if (id == this.id && password == this.password) {
             return true;
         }
         return false;
@@ -32,6 +33,27 @@ class User {
 
     removeAccount(accountNumber) {
         this.userAccounts.delete(accountNumber);
+    }
+
+    // Add the following methods to the User class
+    addLoan(loan) {
+        this.loans.set(loan.id, loan);
+    }
+
+    removeLoan(loanId) {
+        this.loans.delete(loanId);
+    }
+
+    getLoans() {
+        return this.loans;
+    }
+
+    makeLoanPayment(loanId, paymentAmount) {
+        const loan = this.loans.get(loanId);
+        if (loan) {
+            return loan.makePayment(paymentAmount);
+        }
+        return 'Loan not found';
     }
 }
 

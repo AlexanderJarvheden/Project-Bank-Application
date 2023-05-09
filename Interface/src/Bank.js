@@ -18,14 +18,16 @@ class Bank {
         this.accountTypes.set("Savings account", 0.75);
         this.accountTypes.set("Checkings account", '');
         this.accountTypes.set("Credit card", '');
+        this.loans = new Map();
+        this.loanIdCounter = 0;
     }
 
     newUser(personalNumber, password, name) {
         let newUser = new User(personalNumber, name, password);
         this.users.set(personalNumber, newUser);
-        return newUser; 
+        return newUser;
     }
-    
+
     getAllUsers() {
         return Array.from(this.users.values());
     }
@@ -56,11 +58,11 @@ class Bank {
     createAccount(accountType, user) {
         const accountNumber = this.generateUniqueAccountNumber();
         const newAccount = new Account(accountNumber, accountType, user);
-    /*
-    createAccount(accountType, user, interestRate) {
-        const accountNumber = this.generateUniqueAccountNumber();
-        const newAccount = new Account(accountNumber, accountType, user, interestRate);
-    */
+        /*
+        createAccount(accountType, user, interestRate) {
+            const accountNumber = this.generateUniqueAccountNumber();
+            const newAccount = new Account(accountNumber, accountType, user, interestRate);
+        */
         this.accounts.set(accountNumber, newAccount);
         user.addAccount(newAccount);
         return newAccount;
@@ -106,6 +108,28 @@ class Bank {
 
     getClearingNumber() {
         return this.clearingNumber;
+    }
+
+    // Add the following methods to the Bank class
+    createLoanPlatform(account, principal, interestRate, termMonths, startDate) {
+        const loanPlatformId = this.generateUniqueLoanPlatformId();
+        const newLoanPlatform = new LoanPlatform(loanPlatformId, account, principal, interestRate, termMonths, startDate);
+        this.loanPlatforms.set(loanPlatformId, newLoanPlatform);
+        return newLoanPlatform;
+    }
+
+    getLoanPlatform(loanPlatformId) {
+        return this.loanPlatforms.get(loanPlatformId);
+    }
+
+    getAllLoanPlatforms() {
+        return Array.from(this.loanPlatforms.values());
+    }
+
+    generateUniqueLoanPlatformId() {
+        const uniqueId = this.loanPlatformIdCounter;
+        this.loanPlatformIdCounter++;
+        return uniqueId.toString().padStart(10, '0');
     }
 }
 export default Bank;
