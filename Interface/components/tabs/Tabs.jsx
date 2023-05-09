@@ -1,78 +1,48 @@
 import React from 'react'
-import { View, Text, TouchableOpacity, FlatList } from 'react-native'
-
+import { View, Text, TouchableOpacity } from 'react-native'
 import styles from './tabs.style';
-import { SIZES } from '../../constants';
+import { SafeAreaView } from 'react-native';
 
 const TabButton = ({name, activeTab, onHandleSearchType}) => (
   <TouchableOpacity style={styles.btn(name, activeTab)}
     onPress={onHandleSearchType}
     >
-    <Text style={styles.btnText(name, activeTab)}>{name}</Text>
+    <Text style={styles.btnText(name, activeTab)} numberOfLines={1} ellipsizeMode='tail'>{name}</Text>
   </TouchableOpacity>
 )
 
+/*
 const Tabs = ({ tabs, activeTab, setActiveTab }) => {
   return (
-    <View style={styles.container}>
-      <FlatList
-        data={tabs}
-        renderItem={({item}) => (
+    <View style={styles.stickyContainer}>
+      <View style={styles.container}>
+        {tabs.map((item, index) => (
           <TabButton
+            key={index}
             name={item}
             activeTab={activeTab}
             onHandleSearchType={() => setActiveTab(item)}
           />
-        )}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        keyExtractor={item => item}
-        // contentContainerStyle={{columnGap: SIZES.small / 2 }}
-      />
+        ))}
+      </View>
     </View>
+  )
+}
+*/
+
+const Tabs = ({ tabs, activeTab, setActiveTab }) => {
+  return (
+    <SafeAreaView style={styles.container}>
+      {tabs.map((tab) => (
+        <TabButton
+          key={tab}
+          name={tab}
+          activeTab={activeTab}
+          onHandleSearchType={() => setActiveTab(tab)}
+        />
+      ))}
+    </SafeAreaView>
   )
 }
 
 export default Tabs
-
-// import React from 'react'
-// import { View, Text, TouchableOpacity, FlatList } from 'react-native'
-
-// import styles from './tabs.style';
-// import { SIZES } from '../../constants';
-
-// const TabButton = ({name, activeTab, onHandleSearchType}) => (
-//   <TouchableOpacity style={styles.btn(name, activeTab)}
-//     onPress={onHandleSearchType}
-//     >
-//     <Text style={styles.btnText(name, activeTab)}>{name}</Text>
-//   </TouchableOpacity>
-// )
-
-// const Tabs = ({ tabs, activeTab, setActiveTab }) => {
-//   return (
-//     <View style={{flex: 1}}>
-//       <View style={styles.stickyContainer}>
-//         <FlatList
-//           data={tabs}
-//           renderItem={({item}) => (
-//             <TabButton
-//               name={item}
-//               activeTab={activeTab}
-//               onHandleSearchType={() => setActiveTab(item)}
-//             />
-//           )}
-//           horizontal
-//           showsHorizontalScrollIndicator={false}
-//           keyExtractor={item => item}
-//           // contentContainerStyle={{columnGap: SIZES.small / 2 }}
-//         />
-//       </View>
-//     </View>
-//   );
-  
-// }
-
-
-
-// export default Tabs;
