@@ -112,7 +112,7 @@ const [portfolio, setPortfolio] = useState([]);
   return (
     <View style={styles.container}>
       <View style={styles.content}>
-      <View style={styles.balanceContainer, styles.content}>
+      <View style={styles.balanceContainer}>
         <Icon name="account-balance-wallet" type="material" />
         <Text style={styles.balanceText}>Balance: ${balance.toFixed(2)}</Text>
       </View>
@@ -125,7 +125,7 @@ const [portfolio, setPortfolio] = useState([]);
       />
       <ScrollView>
         {searchText === "" && (
-          <View>
+          <View style={{flex: 0}}>
             <Text style={styles.sectionTitle}>Popular Stocks</Text>
             {popularStocks.map((stock, index) => (
               <ListItem key={index} bottomDivider containerStyle={styles.listItemContainer}>
@@ -199,10 +199,8 @@ const styles = StyleSheet.create({
     height: "100%", // Set a fixed height for the container
     overflow: "scroll", // Allow content to be scrollable within the container
   },
-  content: {
-    flexGrow: 1, // Make the content grow to fill the container
-  },
   balanceContainer: {
+    flexGrow: 1,
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 10,

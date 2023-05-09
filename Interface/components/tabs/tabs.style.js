@@ -20,6 +20,15 @@ const styles = StyleSheet.create({
     fontSize: SIZES.small,
     color: name === activeTab ? "#FFFFFF" : COLORS.primary,
   }),
+  stickyContainer: {
+    position: 'fixed',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: 'white', // adjust this to your needs
+    borderTopWidth: 1, // adjust this to your needs
+    borderTopColor: '#ccc', // adjust this to your needs
+  },
 });
 
 export default styles;

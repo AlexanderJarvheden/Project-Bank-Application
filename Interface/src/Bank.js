@@ -1,3 +1,4 @@
+
 import User from "../src/User";
 import Account from "./Account";
 
@@ -12,7 +13,7 @@ class Bank {
         this.accountNumberCounter = 0;
 
         let patientZero = new User("021101", "Alexander Järvheden", "123");
-        this.users.set(patientZero.getId(), patientZero);
+        this.users.set(patientZero.getId(), patientZero)
 
         this.accountTypes = new Map();
         this.accountTypes.set("Savings account", 0.75);
@@ -29,6 +30,7 @@ class Bank {
     getAllUsers() {
         return Array.from(this.users.values());
     }
+
 
     login(userId, password) {
         const user = this.getUser(userId);
@@ -51,6 +53,11 @@ class Bank {
     createAccount(accountType, user) {
         const accountNumber = this.generateUniqueAccountNumber();
         const newAccount = new Account(accountNumber, accountType, user);
+    /*
+    createAccount(accountType, user, interestRate) {
+        const accountNumber = this.generateUniqueAccountNumber();
+        const newAccount = new Account(accountNumber, accountType, user, interestRate);
+    */
         this.accounts.set(accountNumber, newAccount);
         user.addAccount(newAccount);
         return newAccount;
@@ -94,9 +101,8 @@ class Bank {
         this.totalCapitalLoanedOut -= amount;
     }
 
-    getClearingNumber(){
+    getClearingNumber() {
         return this.clearingNumber;
     }
 }
-
 export default Bank;

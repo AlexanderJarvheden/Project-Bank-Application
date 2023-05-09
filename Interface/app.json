@@ -5,6 +5,14 @@
       "bundler": "metro"
     },
     "name": "Interface",
-    "slug": "Interface"
+    "slug": "Interface",
+    "extra": {
+      "eas": {
+        "projectId": "0909db8c-d2b5-4cea-9c80-ec91049a9aa6"
+      }
+    },
+    "ios": {
+      "bundleIdentifier": "com.alexanderjarvheden.Interface"
+    }
   }
 }
