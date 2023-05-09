@@ -23,6 +23,10 @@ class Bank {
         newUser = new User(personalNumber, name, password)
         this.users.set(personalNumber, newUser); // Saves the user in the database and gets called by its personalnumber
     }
+    
+    getAllUsers() {
+        return Array.from(this.users.values());
+    }
 
     // saveUsersToFile() {
     //     try {
