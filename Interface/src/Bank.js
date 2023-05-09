@@ -25,6 +25,10 @@ class Bank {
         this.users.set(personalNumber, newUser);
         return newUser; 
     }
+    
+    getAllUsers() {
+        return Array.from(this.users.values());
+    }
 
     getAllUsers() {
         return Array.from(this.users.values());

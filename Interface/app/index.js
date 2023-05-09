@@ -1,4 +1,4 @@
-import { ScrollView, View, Text, SafeAreaView, TouchableOpacity } from "react-native";
+import { ScrollView, View, Text, SafeAreaView, TouchableOpacity, StyleSheet } from "react-native";
 import { Stack, Link } from 'expo-router'
 import SignIn from "../components/signin/signIn";
 import { COLORS, SIZES } from '../constants';
@@ -21,7 +21,7 @@ const JobDetails = () => {
   const [activeUser, setActiveUser] = useState('');
   
   const ceriseBank = new Bank(1234);
-  
+
   const showAllUsers = () => {
     const allUsers = ceriseBank.getAllUsers();
     console.log(allUsers);
@@ -107,6 +107,11 @@ const JobDetails = () => {
               </TouchableOpacity>
             </View>
             <CreateNewUser Bank={ceriseBank} created={setShowCreateNewUser} />
+            <TouchableOpacity style={styles.button} onPress={showAllUsers}>
+              <View style={styles.buttonContainer}>
+                <Text style={styles.buttonText}>List all accounts</Text>
+              </View>
+            </TouchableOpacity>
           </View>
         </ScrollView>
       )}
@@ -115,4 +120,3 @@ const JobDetails = () => {
 }
 
 export default JobDetails
-
