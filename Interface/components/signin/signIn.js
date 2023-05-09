@@ -5,20 +5,26 @@ import { Stack, Link, Route } from 'expo-router';
 import { useNavigation } from '@react-navigation/native';
 import CreateNewUser from './createNewUser';
 import { createStackNavigator } from '@react-navigation/stack';
+import Database from '../../src/DataBase';
 
 const SignIn = ({ Bank, onSignIn }) => {
   const [personalNumber, setpersonalNumber] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSignIn = () => {
-    if (Bank.users.has(personalNumber) && Bank.users.get(personalNumber).signIn(personalNumber, password)) {
-      onSignIn(personalNumber);
-    }
-    else {
+  const handleSignIn = async () => {
+    const user = await Database.getUser(personalNumber);
+    console.log('Retrieved user:', user);
+    console.log('Password:', password);
+    console.log('Personal number:', personalNumber);
+    if (user && user.password === password) {
+      onSignIn(personalNumber, password);
+      console.log('SignIn Success!');
+    } else {
       Alert.alert('Error', 'Invalid Personal number or password.');
-      // onSignIn(false);
     }
   };
+  
+  
 
   return (
     <View style={styles.container}>
