@@ -1,21 +1,27 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { COLORS } from '../../constants';
+import Database from '../../src/DataBase';
 
-const CreateNewUser = ({Bank, created}) => {
+const CreateNewUser = ({Bank, created}) => { // Removed async keyword
   const [personalNumber, setpersonalNumber] = useState('');
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleCreateNewUser = () => {
-    if(!Bank.users.has(personalNumber)){
-        Bank.newUser(personalNumber, password, name);
+  const handleCreateNewUser = async () => {
+    const user = await Database.getUser(personalNumber);
+    if (!user) {
+      const newUser = Bank.newUser(personalNumber, password, name);
+      if (newUser) { // Check if newUser is not null or undefined
+        await Database.storeUser(personalNumber, newUser);
         Alert.alert('Successful!', 'Welcome ' + name);
-        created(false)
-    }
-    else{
+        created(false);
+      } else {
+        Alert.alert('Error', 'Failed to create new user');
+      }
+    } else {
       Alert.alert('Error', 'User already exists');
-      created(true)
+      created(true);
     }
   };
 
