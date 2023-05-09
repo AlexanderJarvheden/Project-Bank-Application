@@ -120,3 +120,10 @@ const JobDetails = () => {
 }
 
 export default JobDetails
+const styles = StyleSheet.create({
+  button: {
+    width: '100%',
+    alignItems: 'center',
+    marginTop: 20,
+  }
+})
