@@ -13,18 +13,12 @@ const SignIn = ({ Bank, onSignIn }) => {
 
   const handleSignIn = async () => {
     const user = await Database.getUser(personalNumber);
-    console.log('Retrieved user:', user);
-    console.log('Password:', password);
-    console.log('Personal number:', personalNumber);
     if (user && user.password === password) {
       onSignIn(personalNumber, password);
-      console.log('SignIn Success!');
     } else {
       Alert.alert('Error', 'Invalid Personal number or password.');
     }
   };
-  
-  
 
   return (
     <View style={styles.container}>
