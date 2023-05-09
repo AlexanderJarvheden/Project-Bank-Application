@@ -31,7 +31,7 @@ const JobDetails = () => {
     const user = await Database.getUser(personalNumber);
     if (user && user.password === password) {
       setIsSignedIn(true);
-      setSignedInUser(personalNumber);
+      setSignedInUser(user);
     } else {
       Alert.alert('Error', 'Invalid Personal number or password.');
     }
@@ -56,7 +56,7 @@ const JobDetails = () => {
   const displayTabContent = () => {
     switch (activeTab) {
       case "Accounts":
-        return <AccountScreen bank={ceriseBank} signedInUser={ceriseBank.users.get(signedInUser)}
+        return <AccountScreen bank={ceriseBank} signedInUser={signedInUser}
           title="Accounts" />
       case "Transfer":
         showAllUsers();
@@ -106,7 +106,8 @@ const JobDetails = () => {
                 </Text>
               </TouchableOpacity>
             </View>
-            <CreateNewUser Bank={ceriseBank} created={setShowCreateNewUser} />
+            {showCreateNewUser && (<CreateNewUser Bank={ceriseBank} created={setShowCreateNewUser} />)}
+            
             <TouchableOpacity style={styles.button} onPress={showAllUsers}>
               <View style={styles.buttonContainer}>
                 <Text style={styles.buttonText}>List all accounts</Text>
