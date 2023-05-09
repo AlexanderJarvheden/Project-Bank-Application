@@ -3,17 +3,28 @@ import { COLORS, SHADOWS, SIZES } from "../../constants";
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: SIZES.small,
-    marginBottom: SIZES.small / 2,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    borderTopLeftRadius: 5,
+    borderTopRightRadius: 5,
+    overflow: 'hidden',
+    backgroundColor: 'transparent',
+    borderTopWidth: 0,
+    borderTopColor: '#ccc',
+    paddingHorizontal: 15,
+    paddingBottom: Platform.OS === 'ios' ? 20 : 0,
   },
   btn: (name, activeTab) => ({
+    flex: 1,
     paddingVertical: SIZES.medium,
-    paddingHorizontal: SIZES.xLarge,
+    paddingHorizontal: SIZES.small,
+    marginHorizontal: 2.5,
+    alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: name === activeTab ? COLORS.tertiary : "#F3F4F8",
-    borderRadius: SIZES.medium,
-    marginLeft: 2,
-    ...SHADOWS.medium,
-    shadowColor: COLORS.white,
+    borderRadius: SIZES.large,
+    ...SHADOWS.large,
+    shadowColor: COLORS.gray,
   }),
   btnText: (name, activeTab) => ({
     fontFamily: "DMMedium",
@@ -21,13 +32,10 @@ const styles = StyleSheet.create({
     color: name === activeTab ? "#FFFFFF" : COLORS.primary,
   }),
   stickyContainer: {
-    position: 'fixed',
+    position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: 'white', // adjust this to your needs
-    borderTopWidth: 1, // adjust this to your needs
-    borderTopColor: '#ccc', // adjust this to your needs
   },
 });
 
