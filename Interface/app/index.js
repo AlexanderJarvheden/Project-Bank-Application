@@ -19,7 +19,7 @@ const JobDetails = () => {
   const [accounts, setAccounts] = useState([]);
   const [showCreateNewUser, setShowCreateNewUser] = useState(false);
   const [activeUser, setActiveUser] = useState('');
-  
+
   const ceriseBank = new Bank(1234);
 
   const showAllUsers = () => {
@@ -94,9 +94,10 @@ const JobDetails = () => {
       ) : (
         <ScrollView style={{ backgroundColor: COLORS.primary }}>
           <View style={{ justifyContent: "center", alignItems: "center" }}>
-            <Stack.Screen options={{ title: "Welcome to your bank", headerStyle: { backgroundColor: COLORS.red }, 
-                headerTitleStyle: { fontSize: 30, color: COLORS.white } 
-              }} 
+            <Stack.Screen options={{
+              title: "Welcome to your bank", headerStyle: { backgroundColor: COLORS.red },
+              headerTitleStyle: { fontSize: 30, color: COLORS.white }
+            }}
             />
             <SignIn Bank={ceriseBank} onSignIn={handleSignIn} />
             <View style={{ justifyContent: "center", alignItems: "center" }}>
@@ -107,7 +108,7 @@ const JobDetails = () => {
               </TouchableOpacity>
             </View>
             {showCreateNewUser && (<CreateNewUser Bank={ceriseBank} created={setShowCreateNewUser} />)}
-            
+
             <TouchableOpacity style={styles.button} onPress={showAllUsers}>
               <View style={styles.buttonContainer}>
                 <Text style={styles.buttonText}>List all accounts</Text>
