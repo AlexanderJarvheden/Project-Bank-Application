@@ -21,7 +21,7 @@ class Bank {
     }
 
     newUser(personalNumber, password, name) {
-        let newUser = new User(personalNumber, name, password);
+        const newUser = new User(personalNumber, name, password);
         this.users.set(personalNumber, newUser);
         return newUser; 
     }
@@ -53,18 +53,33 @@ class Bank {
         return this.users.get(id);
     }
 
+    // createAccount(accountType, user) {
+    //     const accountNumber = this.generateUniqueAccountNumber();
+    //     const newAccount = new Account(accountNumber, accountType, user);
+    // /*
+    // createAccount(accountType, user, interestRate) {
+    //     const accountNumber = this.generateUniqueAccountNumber();
+    //     const newAccount = new Account(accountNumber, accountType, user, interestRate);
+    // */
+    //     this.accounts.set(accountNumber, newAccount);
+    //     user.addAccount(newAccount);
+    //     return newAccount;
+    // }
+
     createAccount(accountType, user) {
         const accountNumber = this.generateUniqueAccountNumber();
         const newAccount = new Account(accountNumber, accountType, user);
-    /*
-    createAccount(accountType, user, interestRate) {
-        const accountNumber = this.generateUniqueAccountNumber();
-        const newAccount = new Account(accountNumber, accountType, user, interestRate);
-    */
+        console.log("newAccount:", newAccount); // Check if newAccount object is created as expected
+    
         this.accounts.set(accountNumber, newAccount);
-        user.addAccount(newAccount);
+        console.log("user:", user); // Check if user object is defined and has expected value
+        const user2 = new User("123", "John Doe", "password");
+        console.log(user2 instanceof User);
+        console.log(user instanceof User);
+        user.addAccount(newAccount); // Check if user object has the addAccount method and is callable
         return newAccount;
     }
+    
 
     getAccount(accountNumber) {
         return this.accounts.get(accountNumber);

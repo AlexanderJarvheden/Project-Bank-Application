@@ -15,6 +15,7 @@ const SignIn = ({ Bank, onSignIn }) => {
     const user = await Database.getUser(personalNumber);
     if (user && user.password === password) {
       onSignIn(personalNumber, password);
+      // onSignIn(user);
     } else {
       Alert.alert('Error', 'Invalid Personal number or password.');
     }
