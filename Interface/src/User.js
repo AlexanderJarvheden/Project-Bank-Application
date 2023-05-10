@@ -5,7 +5,9 @@ class User {
         this.name = name;
         this.password = password;
         this.userAccounts = new Map();
-        this.loans = new Map();
+        this.incomingTransfers = [];
+        this.scheduledTransfers = [];
+        this.outgoingTransfers = [];
     }
 
     signIn(id, password) {
@@ -35,25 +37,32 @@ class User {
         this.userAccounts.delete(accountNumber);
     }
 
-    // Add the following methods to the User class
-    addLoan(loan) {
-        this.loans.set(loan.id, loan);
+    getIncomingTransfers() {
+        // Return incoming transfers
+        return this.incomingTransfers;
     }
 
-    removeLoan(loanId) {
-        this.loans.delete(loanId);
+    getScheduledTransfers() {
+        // Return scheduled transfers
+        return this.scheduledTransfers;
     }
 
-    getLoans() {
-        return this.loans;
+    getOutgoingTransfers() {
+        // Return outgoing transfers
+        return this.outgoingTransfers;
     }
 
-    makeLoanPayment(loanId, paymentAmount) {
-        const loan = this.loans.get(loanId);
-        if (loan) {
-            return loan.makePayment(paymentAmount);
-        }
-        return 'Loan not found';
+    // Add methods to add transfers to the respective arrays:
+    addIncomingTransfer(transfer) {
+        this.incomingTransfers.push(transfer);
+    }
+
+    addScheduledTransfer(transfer) {
+        this.scheduledTransfers.push(transfer);
+    }
+
+    addOutgoingTransfer(transfer) {
+        this.outgoingTransfers.push(transfer);
     }
 }
 

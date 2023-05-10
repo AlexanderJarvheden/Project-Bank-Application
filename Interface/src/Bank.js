@@ -18,8 +18,8 @@ class Bank {
         this.accountTypes.set("Savings account", 0.75);
         this.accountTypes.set("Checkings account", '');
         this.accountTypes.set("Credit card", '');
-        this.loans = new Map();
-        this.loanIdCounter = 0;
+        this.transfers = new Map();
+
     }
 
     newUser(personalNumber, password, name) {
@@ -66,6 +66,50 @@ class Bank {
         this.accounts.set(accountNumber, newAccount);
         user.addAccount(newAccount);
         return newAccount;
+    }
+
+    validateTransfer(fromAccount, toAccount) {
+        // Assuming 'users' is a Map with personal numbers as keys and User objects as values
+        const fromUser = this.users.get(fromAccount.userPersonalNumber);
+        const toUser = this.users.get(toAccount.userPersonalNumber);
+
+        if (!fromUser || !toUser) {
+            return { success: false, message: 'Invalid account numbers.' };
+        }
+
+        const fromAccountBalance = fromAccount.balance;
+        if (fromAccountBalance < amount) {
+            return { success: false, message: 'Insufficient funds.' };
+        }
+
+        return { success: true, message: 'Transfer is valid.' };
+    }
+
+    performTransfer(fromAccount, toAccount, amount) {
+        // Deduct the amount from the 'fromAccount'
+        fromAccount.balance -= amount;
+
+        // Schedule the transfer if outside the 13:00 - 17:00 window
+        const now = new Date();
+        const hours = now.getHours();
+        if (hours < 13 || hours > 17) {
+            const scheduledDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 13, 0, 0);
+            scheduledDate.setDate(scheduledDate.getDate() + (scheduledDate.getDay() === 5 ? 3 : 1));
+            const transfer = this.createTransfer(fromAccount, toAccount, amount, scheduledDate);
+            fromAccount.userPersonalNumber.getScheduledTransfers().push(transfer);
+        } else {
+            // Add the amount to the 'toAccount' and store the transfer
+            toAccount.balance += amount;
+            const transfer = this.createTransfer(fromAccount, toAccount, amount, new Date());
+            fromAccount.userPersonalNumber.getIncomingTransfers().push(transfer);
+        }
+    }
+
+    createTransfer(fromAccount, toAccount, amount, date) {
+        const transfer = new Transfer(fromAccount, toAccount, amount, date);
+        const transferKey = `${fromAccount}_${toAccount}_${Date.now()}`;
+        this.transfers.set(transferKey, transfer);
+        return transfer;
     }
 
     getAccount(accountNumber) {

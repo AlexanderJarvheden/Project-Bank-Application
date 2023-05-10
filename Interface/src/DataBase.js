@@ -1,4 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import User from './User';
+
 
 class Database {
   static async storeUser(key, value) {
@@ -17,12 +19,32 @@ class Database {
   static async getUser(personalNumber) {
     try {
       const jsonString = await AsyncStorage.getItem(personalNumber);
-      return jsonString ? JSON.parse(jsonString) : null;
+      const userData = jsonString ? JSON.parse(jsonString) : null;
+
+      if (userData) {
+        const user = new User(userData.id, userData.name, userData.password);
+        // Re-assign other properties if necessary
+        // For example, if you have a property called 'userAccounts':
+        if (userData.userAccounts) {
+          for (const accountNumber in userData.userAccounts) {
+            const accountData = userData.userAccounts[accountNumber];
+            const account = new Account(accountData.accountNumber, accountData.accountType, user);
+            // Assign other properties if necessary
+            account.balance = accountData.balance;
+            user.userAccounts.set(accountNumber, account);
+          }
+        }
+        return user;
+      }
+      return null;
+
     } catch (error) {
       console.error('Error getting user data:', error);
       return null;
     }
   }
+
+
 
   static async removeUser(personalNumber) {
     try {
