@@ -10,6 +10,7 @@ import Bank from "../src/Bank";
 import CreateNewUser from "../components/signin/createNewUser";
 import User from "../src/User";
 import Database from '../src/DataBase';
+import TransferScreen from "../components/TransferScreen";
 
 const tabs = ["Accounts", "Transfer", "Stock Market", "Loans", "Sign out"];
 
@@ -19,7 +20,7 @@ const JobDetails = () => {
   const [accounts, setAccounts] = useState([]);
   const [showCreateNewUser, setShowCreateNewUser] = useState(false);
   const [activeUser, setActiveUser] = useState('');
-  
+
   const ceriseBank = new Bank(1234);
 
   const showAllUsers = () => {
@@ -59,8 +60,8 @@ const JobDetails = () => {
         return <AccountScreen bank={ceriseBank} signedInUser={ceriseBank.users.get(signedInUser)}
           title="Accounts" />
       case "Transfer":
-        showAllUsers();
-        break;
+        return <TransferScreen bank={ceriseBank} user={ceriseBank.users.get(signedInUser)}
+          title="Transfer" />
       case "Stock Market":
         return <StockMarketTab
           title="Stock Market"
@@ -94,9 +95,10 @@ const JobDetails = () => {
       ) : (
         <ScrollView style={{ backgroundColor: COLORS.primary }}>
           <View style={{ justifyContent: "center", alignItems: "center" }}>
-            <Stack.Screen options={{ title: "Welcome to your bank", headerStyle: { backgroundColor: COLORS.red }, 
-                headerTitleStyle: { fontSize: 30, color: COLORS.white } 
-              }} 
+            <Stack.Screen options={{
+              title: "Welcome to your bank", headerStyle: { backgroundColor: COLORS.red },
+              headerTitleStyle: { fontSize: 30, color: COLORS.white }
+            }}
             />
             <SignIn Bank={ceriseBank} onSignIn={handleSignIn} />
             <View style={{ justifyContent: "center", alignItems: "center" }}>

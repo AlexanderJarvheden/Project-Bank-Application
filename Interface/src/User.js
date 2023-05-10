@@ -7,8 +7,8 @@ class User {
         this.userAccounts = new Map();
     }
 
-    signIn(id, password){
-        if(id == this.id && password == this.password){
+    signIn(id, password) {
+        if (id == this.id && password == this.password) {
             return true;
         }
         return false;
@@ -32,6 +32,18 @@ class User {
 
     removeAccount(accountNumber) {
         this.userAccounts.delete(accountNumber);
+    }
+
+    getIncomingTransfers() {
+        // Implement getting incoming transfers
+    }
+
+    getScheduledTransfers() {
+        // Implement getting scheduled transfers
+    }
+
+    getOutgoingTransfers() {
+        // Fetch and return outgoing transfers for the user
     }
 }
 
