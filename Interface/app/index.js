@@ -31,11 +31,8 @@ const JobDetails = () => {
   }
 
   const handleSignIn = async (personalNumber, password) => {
-    // Ensure personalNumber is a string
-    const stringPersonalNumber = String(personalNumber);
-
-    const user = await Database.getUser(stringPersonalNumber);
-    if (user && user.signIn(stringPersonalNumber, password)) {
+    const user = await Database.getUser(personalNumber);
+    if (user && user.signIn(personalNumber, password)) {
       setIsSignedIn(true);
       setSignedInUser(user);
     } else {

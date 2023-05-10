@@ -18,6 +18,8 @@ class Database {
 
   static async getUser(personalNumber) {
     try {
+      console.log('Trying to get user with personalNumber:', personalNumber); // Add this line
+
       const jsonString = await AsyncStorage.getItem(personalNumber);
       const userData = jsonString ? JSON.parse(jsonString) : null;
 
@@ -40,6 +42,7 @@ class Database {
 
     } catch (error) {
       console.error('Error getting user data:', error);
+
       return null;
     }
   }
