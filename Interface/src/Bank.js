@@ -29,7 +29,6 @@ class Bank {
         }
     }
 
-
     newUser(personalNumber, password, name) {
         const newUser = new User(personalNumber, name, password);
         this.users.set(personalNumber, newUser);
