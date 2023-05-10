@@ -11,6 +11,8 @@ import CreateNewUser from "../components/signin/createNewUser";
 import User from "../src/User";
 import Database from '../src/DataBase';
 import TransferScreen from "../components/TransferScreen";
+import LoanPlatformScreen from "../components/LoanPlatformScreen";
+
 
 const tabs = ["Accounts", "Transfer", "Stock Market", "Loans", "Sign out"];
 
@@ -29,14 +31,18 @@ const JobDetails = () => {
   }
 
   const handleSignIn = async (personalNumber, password) => {
-    const user = await Database.getUser(personalNumber);
-    if (user && user.signIn(personalNumber, password)) {
+    // Ensure personalNumber is a string
+    const stringPersonalNumber = String(personalNumber);
+
+    const user = await Database.getUser(stringPersonalNumber);
+    if (user && user.signIn(stringPersonalNumber, password)) {
       setIsSignedIn(true);
       setSignedInUser(user);
     } else {
       Alert.alert('Error', 'Invalid Personal number or password.');
     }
   };
+
 
 
   useEffect(() => {
@@ -109,7 +115,6 @@ const JobDetails = () => {
             <CreateNewUser Bank={ceriseBank} created={setShowCreateNewUser} />
             <TouchableOpacity style={styles.button} onPress={showAllUsers}>
               <View style={styles.buttonContainer}>
-                <Text style={styles.buttonText}>List all accounts</Text>
               </View>
             </TouchableOpacity>
           </View>

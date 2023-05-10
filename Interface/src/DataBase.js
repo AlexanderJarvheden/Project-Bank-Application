@@ -11,6 +11,7 @@ class Database {
       }
 
       await AsyncStorage.setItem(key, JSON.stringify(value));
+      console.log('User stored:', key, value); // Add this line
     } catch (error) {
       console.error('Error storing user data:', error);
     }
@@ -43,8 +44,6 @@ class Database {
       return null;
     }
   }
-
-
 
   static async removeUser(personalNumber) {
     try {
