@@ -15,6 +15,16 @@ class Database {
     }
   }
 
+  static async storeAccountNumberCounter(key, value) {
+    await AsyncStorage.setItem(key, value.toString());
+  }
+
+  static async getAccountNumberCounter(bank) {
+    const jsonString = await AsyncStorage.getItem(bank);
+    const accountNumberCounter = JSON.parse(jsonString);
+    return accountNumberCounter.parseInt();
+  }
+
   static async getUser(personalNumber) {
     try {
       const jsonString = await AsyncStorage.getItem(personalNumber);
@@ -39,7 +49,9 @@ class Database {
     }
   }
 
-
+  static async removeAccountNumberCounter(bank) {
+    await AsyncStorage.removeItem(bank);
+  }
 
   static async removeUser(personalNumber) {
     try {

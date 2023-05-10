@@ -1,5 +1,6 @@
 import User from "../src/User";
 import Account from "./Account";
+import DataBase from "./DataBase";
 
 class Bank {
     constructor(clearingNumber) {
@@ -9,7 +10,9 @@ class Bank {
         this.totalCapitalLoanedOut = 0;
         this.accounts = new Map();
         this.users = new Map();
-        this.accountNumberCounter = 0;
+        // this.accountNumberCounter = 0;
+        DataBase.storeAccountNumberCounter("ceriseBank", 0);
+
 
         let patientZero = new User("021101", "Alexander Järvheden", "123");
         this.users.set(patientZero.getId(), patientZero)
@@ -72,10 +75,7 @@ class Bank {
         console.log("newAccount:", newAccount); // Check if newAccount object is created as expected
     
         this.accounts.set(accountNumber, newAccount);
-        console.log("user:", user); // Check if user object is defined and has expected value
-        const user2 = new User("123", "John Doe", "password");
-        console.log(user2 instanceof User);
-        console.log(user instanceof User);
+        console.log("user:", user.getUserAccounts()); // Check if user object is defined and has expected value
         user.addAccount(newAccount); // Check if user object has the addAccount method and is callable
         return newAccount;
     }
@@ -86,9 +86,12 @@ class Bank {
     }
 
     generateUniqueAccountNumber() {
-        const uniqueNumber = this.accountNumberCounter;
-        this.accountNumberCounter++;
-        return uniqueNumber.toString().padStart(10, '0');
+        let accountNumberCounter = DataBase.getAccountNumberCounter("ceriseBank");
+        DataBase.removeAccountNumberCounter("ceriseBank");
+        console.log(accountNumberCounter);
+        accountNumberCounter++;
+        DataBase.storeAccountNumberCounter("ceriseBank", accountNumberCounter);
+        return accountNumberCounter.toString().padStart(10, '0');
     }
 
     removeAccount(accountNumber) {
