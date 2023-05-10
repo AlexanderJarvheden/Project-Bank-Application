@@ -1,8 +1,17 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, ScrollView, Alert } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
+import Transfer from '../src/Transfer'; // Add this import if it's not already there
+
 
 const TransferScreen = ({ user, bank }) => {
+    if (!user) {
+        return (
+            <View>
+                <Text>Please sign in to access the Transfer screen.</Text>
+            </View>
+        );
+    }
     const [fromAccount, setFromAccount] = useState('');
     const [toAccount, setToAccount] = useState('');
     const [transferAmount, setTransferAmount] = useState('');
@@ -36,10 +45,20 @@ const TransferScreen = ({ user, bank }) => {
                 <Text>Transfer Money</Text>
                 <Picker
                     selectedValue={fromAccount}
-                    onValueChange={(itemValue) => setFromAccount(itemValue)}>
-                    {Array.from(user.getUserAccounts().values()).map((account, index) => (
-                        <Picker.Item key={index} label={account.getAccountNumber()} value={account.getAccountNumber()} />
-                    ))}
+                    onValueChange={(itemValue) => setFromAccount(itemValue)}
+                >
+                    {Array.from(user.getUserAccounts().values()).map((account, index) => {
+                        if (index === 0 && !fromAccount) {
+                            setFromAccount(account.getAccountNumber());
+                        }
+                        return (
+                            <Picker.Item
+                                key={index}
+                                label={`${account.getAccountNumber()} - ${account.getAccountType()}`}
+                                value={account.getAccountNumber()}
+                            />
+                        );
+                    })}
                 </Picker>
                 <TextInput
                     placeholder="To account"
