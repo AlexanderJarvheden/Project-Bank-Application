@@ -15,16 +15,35 @@ class Database {
     }
   }
 
-  static async storeAccountNumberCounter(key, value) {
-    await AsyncStorage.setItem(key, value.toString());
+  static async storeAccountNumberCounter(bank, value) {
+    try {
+      if (value === null || value === undefined) {
+        console.error('Error: Trying to store a null/undefined value. Key:', bank);
+        return;
+      }
+
+      await AsyncStorage.setItem(bank, value.toString());
+    } catch (error) {
+      console.error('Error storing account number counter:', error);
+    }
   }
 
   static async getAccountNumberCounter(bank) {
-    const jsonString = await AsyncStorage.getItem(bank); // Add 'await' here
-    const accountNumberCounter = jsonString ? JSON.parse(jsonString) : 0;
-    return parseInt(accountNumberCounter); // Call 'parseInt' on the counter value
-  }
+    try {
+      const value = await AsyncStorage.getItem(bank);
 
+      if (value !== null) {
+        return parseInt(value, 10);
+      } else {
+        // Initialize the counter with 1 and store it
+        await this.storeAccountNumberCounter(bank, 1);
+        return 1;
+      }
+    } catch (error) {
+      console.error('Error getting account number counter:', error);
+    }
+    return 1;
+  }
 
 
   static async getUser(personalNumber) {

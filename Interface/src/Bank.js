@@ -10,9 +10,8 @@ class Bank {
         this.totalCapitalLoanedOut = 0;
         this.accounts = new Map();
         this.users = new Map();
-        // this.accountNumberCounter = 0;
-        DataBase.storeAccountNumberCounter("ceriseBank", 0);
 
+        this.initAccountNumberCounter();
 
         let patientZero = new User("021101", "Alexander Järvheden", "123");
         this.users.set(patientZero.getId(), patientZero)
@@ -22,6 +21,14 @@ class Bank {
         this.accountTypes.set("Checkings account", '');
         this.accountTypes.set("Credit card", '');
     }
+
+    async initAccountNumberCounter() {
+        const counter = await DataBase.getAccountNumberCounter("ceriseBank");
+        if (counter === null) {
+            DataBase.storeAccountNumberCounter("ceriseBank", 1);
+        }
+    }
+
 
     newUser(personalNumber, password, name) {
         const newUser = new User(personalNumber, name, password);
@@ -91,14 +98,12 @@ class Bank {
     }
 
     async generateUniqueAccountNumber() {
-        let accountNumberCounter = await DataBase.getAccountNumberCounter("ceriseBank"); // Add 'await' here
-        DataBase.removeAccountNumberCounter("ceriseBank");
+        let accountNumberCounter = await DataBase.getAccountNumberCounter("ceriseBank");
         console.log(accountNumberCounter);
         accountNumberCounter++;
-        DataBase.storeAccountNumberCounter("ceriseBank", accountNumberCounter);
+        await DataBase.storeAccountNumberCounter("ceriseBank", accountNumberCounter); // Add 'await' here
         return accountNumberCounter.toString().padStart(10, '0');
     }
-
 
     removeAccount(accountNumber) {
         this.accounts.delete(accountNumber);
