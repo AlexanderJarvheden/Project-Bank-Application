@@ -2,14 +2,23 @@ class Account {
 
     constructor(accountNumber, accountType, accountOwner
         // , interestRate
-        ) {
+    ) {
         this.accountNumber = accountNumber;
         this.accountType = accountType;
         this.accountOwner = accountOwner;
         this.balance = 0;
         // this.interestRate = interestRate;
         this.transactionHistory = [];
-        
+
+    }
+
+    toJSON() {
+        return {
+            accountNumber: this.accountNumber,
+            accountType: this.accountType,
+            balance: this.balance,
+            // Add other properties if necessary
+        };
     }
 
     deposit(amount) {

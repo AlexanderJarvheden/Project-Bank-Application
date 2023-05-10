@@ -13,6 +13,9 @@ import Database from '../src/DataBase';
 
 const tabs = ["Accounts", "Transfer", "Stock Market", "Loans", "Sign out"];
 
+
+
+
 const JobDetails = () => {
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [signedInUser, setSignedInUser] = useState('');

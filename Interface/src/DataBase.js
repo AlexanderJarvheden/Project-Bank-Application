@@ -20,10 +20,12 @@ class Database {
   }
 
   static async getAccountNumberCounter(bank) {
-    const jsonString = await AsyncStorage.getItem(bank);
-    const accountNumberCounter = JSON.parse(jsonString);
-    return accountNumberCounter.parseInt();
+    const jsonString = await AsyncStorage.getItem(bank); // Add 'await' here
+    const accountNumberCounter = jsonString ? JSON.parse(jsonString) : 0;
+    return parseInt(accountNumberCounter); // Call 'parseInt' on the counter value
   }
+
+
 
   static async getUser(personalNumber) {
     try {

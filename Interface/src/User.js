@@ -7,8 +7,8 @@ class User {
         this.userAccounts = new Map();
     }
 
-    signIn(id, password){
-        if(id == this.id && password == this.password){
+    signIn(id, password) {
+        if (id == this.id && password == this.password) {
             return true;
         }
         return false;
@@ -32,10 +32,10 @@ class User {
 
     addAccount(account) {
         console.log(`Adding account ${account.getAccountNumber()} to user ${this.id}`);
-        this.userAccounts.set(account.getAccountNumber(), account);
+        this.userAccounts.set(account.getAccountNumber(), account.toJSON());
         console.log(`User accounts after adding account: ${JSON.stringify(this.userAccounts)}`);
-      }
-      
+    }
+
 
     removeAccount(accountNumber) {
         this.userAccounts.delete(accountNumber);

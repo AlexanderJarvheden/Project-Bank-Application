@@ -26,9 +26,9 @@ class Bank {
     newUser(personalNumber, password, name) {
         const newUser = new User(personalNumber, name, password);
         this.users.set(personalNumber, newUser);
-        return newUser; 
+        return newUser;
     }
-    
+
     getAllUsers() {
         return Array.from(this.users.values());
     }
@@ -69,30 +69,36 @@ class Bank {
     //     return newAccount;
     // }
 
-    createAccount(accountType, user) {
-        const accountNumber = this.generateUniqueAccountNumber();
+    async createAccount(accountType, user) {
+        const accountNumber = await this.generateUniqueAccountNumber(); // Add 'await' here
         const newAccount = new Account(accountNumber, accountType, user);
         console.log("newAccount:", newAccount); // Check if newAccount object is created as expected
-    
+
         this.accounts.set(accountNumber, newAccount);
         console.log("user:", user.getUserAccounts()); // Check if user object is defined and has expected value
         user.addAccount(newAccount); // Check if user object has the addAccount method and is callable
+
+        // Store the updated user data in the database
+        DataBase.storeUser(user.getId(), user);
+
         return newAccount;
     }
-    
+
+
 
     getAccount(accountNumber) {
         return this.accounts.get(accountNumber);
     }
 
-    generateUniqueAccountNumber() {
-        let accountNumberCounter = DataBase.getAccountNumberCounter("ceriseBank");
+    async generateUniqueAccountNumber() {
+        let accountNumberCounter = await DataBase.getAccountNumberCounter("ceriseBank"); // Add 'await' here
         DataBase.removeAccountNumberCounter("ceriseBank");
         console.log(accountNumberCounter);
         accountNumberCounter++;
         DataBase.storeAccountNumberCounter("ceriseBank", accountNumberCounter);
         return accountNumberCounter.toString().padStart(10, '0');
     }
+
 
     removeAccount(accountNumber) {
         this.accounts.delete(accountNumber);
