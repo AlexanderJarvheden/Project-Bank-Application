@@ -21,7 +21,7 @@ class Bank {
     }
 
     newUser(personalNumber, password, name) {
-        newUser = new User(personalNumber, name, password);
+        const newUser = new User(personalNumber, name, password);
         this.users.set(personalNumber, newUser);
         return newUser; 
     }
@@ -73,6 +73,9 @@ class Bank {
     
         this.accounts.set(accountNumber, newAccount);
         console.log("user:", user); // Check if user object is defined and has expected value
+        const user2 = new User("123", "John Doe", "password");
+        console.log(user2 instanceof User);
+        console.log(user instanceof User);
         user.addAccount(newAccount); // Check if user object has the addAccount method and is callable
         return newAccount;
     }
