@@ -1,5 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import User from './User';
+<<<<<<< HEAD
+=======
+
+>>>>>>> Loan-platform-js
 
 class Database {
   static async storeUser(key, value) {
@@ -14,6 +18,7 @@ class Database {
       console.error('Error storing user data:', error);
     }
   }
+<<<<<<< HEAD
 
   static async storeAccountNumberCounter(bank, value) {
     try {
@@ -45,9 +50,13 @@ class Database {
     return 1;
   }
 
+=======
+>>>>>>> Loan-platform-js
 
   static async getUser(personalNumber) {
     try {
+      console.log('Trying to get user with personalNumber:', personalNumber); // Add this line
+
       const jsonString = await AsyncStorage.getItem(personalNumber);
       const userData = jsonString ? JSON.parse(jsonString) : null;
 
@@ -57,7 +66,15 @@ class Database {
         // For example, if you have a property called 'userAccounts':
         if (userData.userAccounts) {
           for (const accountNumber in userData.userAccounts) {
+<<<<<<< HEAD
             user.userAccounts.set(accountNumber, userData.userAccounts[accountNumber]);
+=======
+            const accountData = userData.userAccounts[accountNumber];
+            const account = new Account(accountData.accountNumber, accountData.accountType, user);
+            // Assign other properties if necessary
+            account.balance = accountData.balance;
+            user.userAccounts.set(accountNumber, account);
+>>>>>>> Loan-platform-js
           }
         }
         return user;
@@ -66,13 +83,18 @@ class Database {
 
     } catch (error) {
       console.error('Error getting user data:', error);
+
       return null;
     }
   }
 
+<<<<<<< HEAD
   static async removeAccountNumberCounter(bank) {
     await AsyncStorage.removeItem(bank);
   }
+=======
+
+>>>>>>> Loan-platform-js
 
   static async removeUser(personalNumber) {
     try {
