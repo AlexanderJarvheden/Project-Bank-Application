@@ -10,6 +10,9 @@ import Bank from "../src/Bank";
 import CreateNewUser from "../components/signin/createNewUser";
 import User from "../src/User";
 import Database from '../src/DataBase';
+import TransferScreen from "../components/TransferScreen";
+import LoanPlatformScreen from "../components/LoanPlatformScreen";
+
 
 const tabs = ["Accounts", "Transfer", "Stock Market", "Loans", "Sign out"];
 
@@ -33,13 +36,15 @@ const JobDetails = () => {
 
   const handleSignIn = async (personalNumber, password) => {
     const user = await Database.getUser(personalNumber);
-    if (user && user.password === password) {
+    if (user && user.signIn(personalNumber, password)) {
       setIsSignedIn(true);
       setSignedInUser(user);
     } else {
       Alert.alert('Error', 'Invalid Personal number or password.');
     }
   };
+
+
 
   useEffect(() => {
     const accounts = [
@@ -60,18 +65,15 @@ const JobDetails = () => {
   const displayTabContent = () => {
     switch (activeTab) {
       case "Accounts":
-        return <AccountScreen bank={ceriseBank} signedInUser={signedInUser}
-          title="Accounts" />
+        return <AccountScreen bank={ceriseBank} signedInUser={signedInUser} title="Accounts" />
       case "Transfer":
-        showAllUsers();
-        break;
+        return <TransferScreen bank={ceriseBank} user={signedInUser} title="Transfer" />
       case "Stock Market":
         return <StockMarketTab
           title="Stock Market"
         />
       case "Loans":
-        // Show Loans tab content here
-        break;
+        return <LoanPlatformScreen bank={ceriseBank} user={ceriseBank.users.get(signedInUser)} />
       case "Sign out":
         refresh();
         break;
@@ -134,7 +136,6 @@ const JobDetails = () => {
 
             <TouchableOpacity style={styles.button} onPress={showAllUsers}>
               <View style={styles.buttonContainer}>
-                <Text style={styles.buttonText}>List all accounts</Text>
               </View>
             </TouchableOpacity>
           </View>

@@ -5,6 +5,9 @@ class User {
         this.name = name;
         this.password = password;
         this.userAccounts = new Map();
+        this.incomingTransfers = [];
+        this.scheduledTransfers = [];
+        this.outgoingTransfers = [];
     }
 
     signIn(id, password) {
@@ -57,6 +60,33 @@ class User {
         return new Map(JSON.parse(jsonStr));
     }
 
+    getIncomingTransfers() {
+        // Return incoming transfers
+        return this.incomingTransfers;
+    }
+
+    getScheduledTransfers() {
+        // Return scheduled transfers
+        return this.scheduledTransfers;
+    }
+
+    getOutgoingTransfers() {
+        // Return outgoing transfers
+        return this.outgoingTransfers;
+    }
+
+    // Add methods to add transfers to the respective arrays:
+    addIncomingTransfer(transfer) {
+        this.incomingTransfers.push(transfer);
+    }
+
+    addScheduledTransfer(transfer) {
+        this.scheduledTransfers.push(transfer);
+    }
+
+    addOutgoingTransfer(transfer) {
+        this.outgoingTransfers.push(transfer);
+    }
 }
 
 
