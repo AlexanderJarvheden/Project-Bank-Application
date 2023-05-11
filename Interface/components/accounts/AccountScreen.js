@@ -16,7 +16,7 @@ const AccountScreen = ({ bank, signedInUser }) => {
       } else {
         console.error('getUserAccounts() does not return a Map or object with a values() method');
       }
-    } 
+    }
   }, [signedInUser]);
 
 
