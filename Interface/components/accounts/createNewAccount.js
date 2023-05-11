@@ -1,3 +1,5 @@
+// CreateNewAccount.js
+
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { COLORS } from '../../constants';
@@ -10,16 +12,16 @@ const CreateNewAccount = ({ bank, created, user }) => {
     const [accountType, setAccountType] = useState('');
     const [name, setName] = useState('');
 
-    const handleCreateNewAccount = async () => {  // Add 'async' here
-        const newAccount = await bank.createAccount(accountType, user);  // Add 'await' here
-        setAccountNumber(newAccount.getAccountNumber())
-        Alert.alert('Successful!', 'Your new account ' + name + " has the account number: " + bank.getClearingNumber() + "-" + accountNumber);
-        created(false);
+    const handleCreateNewAccount = async () => {
+        const newAccount = await bank.createAccount(accountType, user);
+        setAccountNumber(newAccount.getAccountNumber());
+        Alert.alert('Successful!', 'Your new account ' + name + " has the account number: " + bank.getClearingNumber() + "-" + newAccount.getAccountNumber());
+        created(true);
     };
 
     return (
         <View style={styles.container}>
-            {/* <Picker
+            <Picker
                 style={styles.picker}
                 selectedValue={accountType}
                 onValueChange={(itemValue) => setAccountType(itemValue)}
@@ -27,9 +29,8 @@ const CreateNewAccount = ({ bank, created, user }) => {
                 <Picker.Item label="Select an account type" value="" />
                 {Array.from(bank.accountTypes.keys()).map((accountType) => (
                     <Picker.Item label={accountType} value={accountType} key={accountType} />
-
                 ))}
-            </Picker> */}
+            </Picker>
             <TextInput
                 style={{ ...styles.input, color: 'white' }}
                 placeholder="Name"
@@ -53,6 +54,13 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         padding: 20,
+    },
+    picker: {
+        width: '100%',
+        height: 50,
+        marginBottom: 10,
+        borderWidth: 1,
+        borderColor: COLORS.grey,
     },
     input: {
         borderWidth: 1,
