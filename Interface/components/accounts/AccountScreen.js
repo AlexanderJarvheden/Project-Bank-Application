@@ -3,8 +3,8 @@ import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native
 import { COLORS, FONT } from '../../constants/theme';
 import CreateNewAccount from './createNewAccount';
 
-const AccountScreen = ({bank, signedInUser}) => {
-  const[createAccount, setCreateAccount] = useState(false);
+const AccountScreen = ({ bank, signedInUser }) => {
+  const [createAccount, setCreateAccount] = useState(false);
 
   const accounts = [
     { id: 1, name: 'Checking', balance: 2000 },
@@ -14,7 +14,7 @@ const AccountScreen = ({bank, signedInUser}) => {
 
   const renderAccount = ({ item }) => (
     <View style={{ padding: 10 }}>
-      <Text style={{ fontFamily: FONT.bold,  fontSize: 18 }}>{item.name}</Text>
+      <Text style={{ fontFamily: FONT.bold, fontSize: 18 }}>{item.name}</Text>
       <Text style={{ fontFamily: FONT.regular, fontSize: 16 }}>Balance: ${item.balance}</Text>
     </View>
   );
@@ -37,31 +37,31 @@ const AccountScreen = ({bank, signedInUser}) => {
         </View>
       </TouchableOpacity>
       {createAccount && (
-        <CreateNewAccount bank={bank} created={setCreateAccount} user={signedInUser}/>
+        <CreateNewAccount bank={bank} created={setCreateAccount} user={signedInUser} />
       )}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-button: {
-  width: '100%',
-  alignItems: 'center',
-  marginTop: 20,
-},
-buttonContainer: {
-  backgroundColor: COLORS.red,
-  paddingVertical: 10,
-  paddingHorizontal: 20,
-  borderRadius: 10,
-  elevation: 3,
-},
-buttonText: {
-  color: COLORS.lightWhite,
-  fontSize: 18,
-  fontWeight: 'bold',
-  textAlign: 'center',
-},
+  button: {
+    width: '100%',
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  buttonContainer: {
+    backgroundColor: COLORS.red,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    elevation: 3,
+  },
+  buttonText: {
+    color: COLORS.lightWhite,
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
 });
 
 export default AccountScreen;

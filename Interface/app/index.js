@@ -64,12 +64,8 @@ const JobDetails = () => {
   const displayTabContent = () => {
     switch (activeTab) {
       case "Accounts":
-<<<<<<< HEAD
         return <AccountScreen bank={ceriseBank} signedInUser={signedInUser}
           title="Accounts" />
-=======
-        return <AccountScreen bank={ceriseBank} signedInUser={signedInUser} title="Accounts" />
->>>>>>> Loan-platform-js
       case "Transfer":
         return <TransferScreen bank={ceriseBank} user={signedInUser} title="Transfer" />
       case "Stock Market":

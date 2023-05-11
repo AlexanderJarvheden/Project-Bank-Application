@@ -64,19 +64,6 @@ class Bank {
         return this.users.get(id);
     }
 
-    // createAccount(accountType, user) {
-    //     const accountNumber = this.generateUniqueAccountNumber();
-    //     const newAccount = new Account(accountNumber, accountType, user);
-    // /*
-    // createAccount(accountType, user, interestRate) {
-    //     const accountNumber = this.generateUniqueAccountNumber();
-    //     const newAccount = new Account(accountNumber, accountType, user, interestRate);
-    // */
-    //     this.accounts.set(accountNumber, newAccount);
-    //     user.addAccount(newAccount);
-    //     return newAccount;
-    // }
-
     async createAccount(accountType, user) {
         const accountNumber = await this.generateUniqueAccountNumber(); // Add 'await' here
         const newAccount = new Account(accountNumber, accountType, user);
@@ -92,16 +79,15 @@ class Bank {
         return newAccount;
     }
 
-    validateTransfer(fromAccount, toAccount) {
-        // Assuming 'users' is a Map with personal numbers as keys and User objects as values
-        const fromUser = this.users.get(fromAccount.userPersonalNumber);
-        const toUser = this.users.get(toAccount.userPersonalNumber);
+    validateTransfer(fromAccountNumber, toAccountNumber, amount) {
+        const fromAccount = this.getAccount(fromAccountNumber);
+        const toAccount = this.getAccount(toAccountNumber);
 
-        if (!fromUser || !toUser) {
+        if (!fromAccount || !toAccount) {
             return { success: false, message: 'Invalid account numbers.' };
         }
 
-        const fromAccountBalance = fromAccount.balance;
+        const fromAccountBalance = fromAccount.getBalance();
         if (fromAccountBalance < amount) {
             return { success: false, message: 'Insufficient funds.' };
         }
@@ -109,9 +95,20 @@ class Bank {
         return { success: true, message: 'Transfer is valid.' };
     }
 
-    performTransfer(fromAccount, toAccount, amount) {
+
+    performTransfer(fromAccountNumber, toAccountNumber, amount) {
+        const validationResult = this.validateTransfer(fromAccountNumber, toAccountNumber, amount);
+
+        if (!validationResult.success) {
+            Alert.alert('Error', validationResult.message);
+            return;
+        }
+
+        const fromAccount = this.getAccount(fromAccountNumber);
+        const toAccount = this.getAccount(toAccountNumber);
+
         // Deduct the amount from the 'fromAccount'
-        fromAccount.balance -= amount;
+        fromAccount.withdraw(amount);
 
         // Schedule the transfer if outside the 13:00 - 17:00 window
         const now = new Date();
@@ -123,11 +120,12 @@ class Bank {
             fromAccount.userPersonalNumber.getScheduledTransfers().push(transfer);
         } else {
             // Add the amount to the 'toAccount' and store the transfer
-            toAccount.balance += amount;
+            toAccount.deposit(amount);
             const transfer = this.createTransfer(fromAccount, toAccount, amount, new Date());
             fromAccount.userPersonalNumber.getIncomingTransfers().push(transfer);
         }
     }
+
 
     createTransfer(fromAccount, toAccount, amount, date) {
         const transfer = new Transfer(fromAccount, toAccount, amount, date);
