@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, Button } from 'react-native';
 import { COLORS, FONT } from '../../constants/theme';
 import CreateNewAccount from './createNewAccount';
+import User from '../../src/User';
 
 const AccountScreen = ({ bank, signedInUser }) => {
   const [createAccount, setCreateAccount] = useState(false);
@@ -15,9 +16,7 @@ const AccountScreen = ({ bank, signedInUser }) => {
       } else {
         console.error('getUserAccounts() does not return a Map or object with a values() method');
       }
-    } else {
-      console.error('signedInUser is not defined, or does not have a getUserAccounts method');
-    }
+    } 
   }, [signedInUser]);
 
 
