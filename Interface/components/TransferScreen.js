@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, ScrollView, Alert } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import Transfer from '../src/Transfer'; // Add this import if it's not already there
+import Transfer from '../src/Transfer';
 
 
 const TransferScreen = ({ user, bank }) => {
@@ -38,6 +38,15 @@ const TransferScreen = ({ user, bank }) => {
         Alert.alert('Success', 'Transfer completed successfully.');
     };
 
+    useEffect(() => {
+        const accounts = Array.from(user.getUserAccounts().values());
+        console.log(accounts); // Add this line
+        if (accounts.length > 0 && !fromAccount) {
+            setFromAccount(accounts[0].getAccountNumber());
+        }
+    }, [user]);
+
+
 
     return (
         <ScrollView>
@@ -48,9 +57,7 @@ const TransferScreen = ({ user, bank }) => {
                     onValueChange={(itemValue) => setFromAccount(itemValue)}
                 >
                     {Array.from(user.getUserAccounts().values()).map((account, index) => {
-                        if (index === 0 && !fromAccount) {
-                            setFromAccount(account.getAccountNumber());
-                        }
+                        console.log(account); // Add this line
                         return (
                             <Picker.Item
                                 key={index}
@@ -59,6 +66,7 @@ const TransferScreen = ({ user, bank }) => {
                             />
                         );
                     })}
+
                 </Picker>
                 <TextInput
                     placeholder="To account"

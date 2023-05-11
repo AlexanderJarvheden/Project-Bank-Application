@@ -11,9 +11,6 @@ class Bank {
         this.users = new Map();
         this.accountNumberCounter = 0;
 
-        let patientZero = new User("021101", "Alexander Järvheden", "123");
-        this.users.set(patientZero.getId(), patientZero)
-
         this.accountTypes = new Map();
         this.accountTypes.set("Savings account", 0.75);
         this.accountTypes.set("Checkings account", '');
@@ -72,7 +69,7 @@ class Bank {
         const accountNumber = this.generateUniqueAccountNumber();
         const newAccount = new Account(accountNumber, accountType, user);
         console.log("newAccount:", newAccount); // Check if newAccount object is created as expected
-    
+
         this.accounts.set(accountNumber, newAccount);
         console.log("user:", user); // Check if user object is defined and has expected value
         const user2 = new User("123", "John Doe", "password");
@@ -81,7 +78,7 @@ class Bank {
         user.addAccount(newAccount); // Check if user object has the addAccount method and is callable
         return newAccount;
     }
-    
+
 
     validateTransfer(fromAccount, toAccount) {
         // Assuming 'users' is a Map with personal numbers as keys and User objects as values
