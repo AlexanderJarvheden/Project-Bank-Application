@@ -36,12 +36,30 @@ class User {
     addAccount(account) {
         console.log(`Adding account ${account.getAccountNumber()} to user ${this.id}`);
         this.userAccounts.set(account.getAccountNumber(), account.toJSON());
-        console.log(`User accounts after adding account: ${JSON.stringify(this.userAccounts)}`);
+        // console.log(`User accounts after adding account: ${JSON.stringify(this.userAccounts)}`);
+        console.log(`User accounts after adding account:`, [...this.userAccounts]);
     }
 
 
     removeAccount(accountNumber) {
         this.userAccounts.delete(accountNumber);
+    }
+
+    toJSON() {
+        return {
+            id: this.id,
+            name: this.name,
+            password: this.password,
+            userAccounts: Array.from(this.userAccounts.entries()).map(([k, v]) => [k, v.toJSON()]),
+        };
+    }
+
+    mapToJson(map) {
+        return JSON.stringify([...map]);
+    }
+
+    jsonToMap(jsonStr) {
+        return new Map(JSON.parse(jsonStr));
     }
 
     getIncomingTransfers() {
@@ -72,5 +90,7 @@ class User {
         this.outgoingTransfers.push(transfer);
     }
 }
+
+
 
 export default User;

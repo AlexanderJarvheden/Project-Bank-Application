@@ -1,4 +1,4 @@
-import { ScrollView, View, Text, SafeAreaView, TouchableOpacity, StyleSheet, Alert } from "react-native";
+import { ScrollView, View, Text, SafeAreaView, TouchableOpacity, StyleSheet, Modal } from "react-native";
 import { Stack, Link } from 'expo-router'
 import SignIn from "../components/signin/signIn";
 import { COLORS, SIZES } from '../constants';
@@ -25,6 +25,7 @@ const JobDetails = () => {
   const [accounts, setAccounts] = useState([]);
   const [showCreateNewUser, setShowCreateNewUser] = useState(false);
   const [activeUser, setActiveUser] = useState('');
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const ceriseBank = new Bank(1234);
 
@@ -82,6 +83,7 @@ const JobDetails = () => {
     }
   }
 
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.primary }}>
       {isSignedIn ? (
@@ -101,19 +103,37 @@ const JobDetails = () => {
         <ScrollView style={{ backgroundColor: COLORS.primary }}>
           <View style={{ justifyContent: "center", alignItems: "center" }}>
             <Stack.Screen options={{
-              title: "Welcome to your bank", headerStyle: { backgroundColor: COLORS.red },
+              title: "CeriseBank", headerStyle: { backgroundColor: COLORS.red },
               headerTitleStyle: { fontSize: 30, color: COLORS.white }
             }}
             />
             <SignIn Bank={ceriseBank} onSignIn={handleSignIn} />
             <View style={{ justifyContent: "center", alignItems: "center" }}>
-              <TouchableOpacity onPress={() => setShowCreateNewUser(true)}>
+              <TouchableOpacity onPress={() => { setShowCreateNewUser(true); setIsModalVisible(true); }}>
                 <Text style={{ color: 'white', fontSize: 16, fontFamily: 'Arial', textAlign: 'center' }}>
                   New user? Create an account
                 </Text>
               </TouchableOpacity>
             </View>
             {showCreateNewUser && (<CreateNewUser Bank={ceriseBank} created={setShowCreateNewUser} />)}
+            {/* {showCreateNewUser && (<CreateNewUser Bank={ceriseBank} created={setShowCreateNewUser} />)} */}
+            {/* {showCreateNewUser && (
+              <View style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0 }}>
+                <CreateNewUser Bank={ceriseBank} created={() => setShowCreateNewUser(false)} />
+              </View>
+            )} */}
+
+            <Modal visible={isModalVisible} animationType='slide'>
+              <View style={styles.modalContent}>
+                <TouchableOpacity onPress={() => setIsModalVisible(false)}>
+                  <Text style={styles.closeButton}>X</Text>
+                </TouchableOpacity>
+                <CreateNewUser Bank={ceriseBank} created={() => {
+                  setShowCreateNewUser(false);
+                  setIsModalVisible(false);
+                }} />
+              </View>
+            </Modal>
 
             <TouchableOpacity style={styles.button} onPress={showAllUsers}>
               <View style={styles.buttonContainer}>
@@ -121,8 +141,9 @@ const JobDetails = () => {
             </TouchableOpacity>
           </View>
         </ScrollView>
-      )}
-    </SafeAreaView>
+      )
+      }
+    </SafeAreaView >
   )
 }
 
@@ -132,5 +153,17 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
     marginTop: 20,
-  }
+  },
+  modalContent: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
 })

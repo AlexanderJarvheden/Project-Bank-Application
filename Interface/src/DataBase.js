@@ -3,14 +3,19 @@ import User from './User';
 
 class Database {
 
-  static async storeUser(key, value) {
+  static async storeUser(key, user) {
     try {
-      if (value === null || value === undefined) {
+      if (user === null || user === undefined) {
         console.error('Error: Trying to store a null/undefined value. Key:', key);
         return;
       }
 
-      await AsyncStorage.setItem(key, JSON.stringify(value));
+      let userCopy = Object.assign({}, user);
+      userCopy.userAccounts = [...user.userAccounts].reduce((obj, [key, value]) => (
+        Object.assign(obj, { [key]: value }) // convert the Map to an Object
+      ), {});
+
+      await AsyncStorage.setItem(key, JSON.stringify(userCopy));
     } catch (error) {
       console.error('Error storing user data:', error);
     }
@@ -58,13 +63,19 @@ class Database {
         const user = new User(userData.id, userData.name, userData.password);
         // Re-assign other properties if necessary
         // For example, if you have a property called 'userAccounts':
-        if (userData.userAccounts) {
-          for (const accountNumber in userData.userAccounts) {
-            user.userAccounts.set(accountNumber, userData.userAccounts[accountNumber]);
-          }
-        }
+        // if (userData.userAccounts) {
+          // for (const accountNumber in userData.userAccounts) {
+            //user.userAccounts.set(accountNumber, userData.userAccounts[accountNumber]);
+          //}
+        //}
+        user.userAccounts = Object.entries(userData.userAccounts).reduce((map, [key, value]) => {
+          map.set(key, value); // convert the Object back to a Map
+          return map;
+        }, new Map());
+
         return user;
       }
+
       return null;
 
     } catch (error) {
@@ -72,6 +83,10 @@ class Database {
 
       return null;
     }
+  }
+
+  static async removeAccountNumberCounter(bank) {
+    await AsyncStorage.removeItem(bank);
   }
 
   static async removeAccountNumberCounter(bank) {

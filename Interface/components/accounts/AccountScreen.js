@@ -1,35 +1,55 @@
-import React, { useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, Button } from 'react-native';
 import { COLORS, FONT } from '../../constants/theme';
 import CreateNewAccount from './createNewAccount';
+import User from '../../src/User';
 
 const AccountScreen = ({ bank, signedInUser }) => {
   const [createAccount, setCreateAccount] = useState(false);
 
-  const accounts = [
-    { id: 1, name: 'Checking', balance: 2000 },
-    { id: 2, name: 'Savings', balance: 5000 },
-    { id: 3, name: 'Investment', balance: 10000 },
-  ];
+  const [accounts, setAccounts] = useState([]);
+
+  useEffect(() => {
+    if (signedInUser && signedInUser.getUserAccounts) {
+      const userAccounts = signedInUser.getUserAccounts();
+      if (userAccounts.values) {
+        setAccounts(Array.from(userAccounts.values()));
+      } else {
+        console.error('getUserAccounts() does not return a Map or object with a values() method');
+      }
+    }
+  }, [signedInUser]);
+
 
   const renderAccount = ({ item }) => (
     <View style={{ padding: 10 }}>
       <Text style={{ fontFamily: FONT.bold, fontSize: 18 }}>{item.name}</Text>
       <Text style={{ fontFamily: FONT.regular, fontSize: 16 }}>Balance: ${item.balance}</Text>
+    <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 10 }}>
+      <View>
+        <Text style={{ fontFamily: FONT.bold, fontSize: 18 }}>{item.accountType}</Text>
+        <Text style={{ fontFamily: FONT.regular, fontSize: 16 }}>Balance: ${item.balance}</Text>
+      </View>
+      <Button title="Delete" onPress={() => handleDeleteAccount(item.accountNumber)} />
     </View>
   );
 
-  const handleCreateNewAccount = () => (
-    setCreateAccount(true)
-  );
+  const handleDeleteAccount = (accountNumber) => {
+    signedInUser.removeAccount(accountNumber);
+    setAccounts(Array.from(signedInUser.getUserAccounts().values()));
+  };
 
+  const handleCreateNewAccount = () => {
+    setCreateAccount(true);
+  };
 
   return (
     <View style={{ flex: 1, backgroundColor: COLORS.red }}>
       <FlatList
         data={accounts}
         renderItem={renderAccount}
-        keyExtractor={item => item.id.toString()}
+        keyExtractor={item => item.accountNumber}
+        removeClippedSubviews={true}
       />
       <TouchableOpacity style={styles.button} onPress={handleCreateNewAccount}>
         <View style={styles.buttonContainer}>
