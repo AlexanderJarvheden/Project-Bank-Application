@@ -64,10 +64,10 @@ class Database {
         // Re-assign other properties if necessary
         // For example, if you have a property called 'userAccounts':
         // if (userData.userAccounts) {
-          // for (const accountNumber in userData.userAccounts) {
-            //user.userAccounts.set(accountNumber, userData.userAccounts[accountNumber]);
-          //}
-        //}
+        //   for (const accountNumber in userData.userAccounts) {
+        //     user.userAccounts.set(accountNumber, userData.userAccounts[accountNumber]);
+        //   }
+        // }
         user.userAccounts = Object.entries(userData.userAccounts).reduce((map, [key, value]) => {
           map.set(key, value); // convert the Object back to a Map
           return map;
