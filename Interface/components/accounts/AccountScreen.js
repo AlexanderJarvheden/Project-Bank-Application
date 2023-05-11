@@ -33,7 +33,7 @@ const AccountScreen = ({ bank, signedInUser }) => {
       </View>
     </View>
   );
-  
+
 
   const handleDeleteAccount = (accountNumber) => {
     signedInUser.removeAccount(accountNumber);

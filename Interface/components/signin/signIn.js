@@ -1,10 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { COLORS } from '../../constants';
-import { Stack, Link, Route } from 'expo-router';
-import { useNavigation } from '@react-navigation/native';
-import CreateNewUser from './createNewUser';
-import { createStackNavigator } from '@react-navigation/stack';
 import Database from '../../src/DataBase';
 
 const SignIn = ({ Bank, onSignIn }) => {
