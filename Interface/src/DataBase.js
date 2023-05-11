@@ -15,6 +15,9 @@ class Database {
     }
   }
 
+
+
+
   static async storeAccountNumberCounter(bank, value) {
     try {
       if (value === null || value === undefined) {
