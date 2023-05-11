@@ -79,6 +79,7 @@ const JobDetails = () => {
     }
   }
 
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.primary }}>
       {isSignedIn ? (
