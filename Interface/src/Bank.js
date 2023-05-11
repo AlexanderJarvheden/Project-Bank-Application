@@ -13,9 +13,6 @@ class Bank {
 
         this.initAccountNumberCounter();
 
-        let patientZero = new User("021101", "Alexander Järvheden", "123");
-        this.users.set(patientZero.getId(), patientZero)
-
         this.accountTypes = new Map();
         this.accountTypes.set("Savings account", 0.75);
         this.accountTypes.set("Checkings account", '');

@@ -59,6 +59,11 @@ class Account {
     getAccountNumber() {
         return this.accountNumber;
     }
+
+    getAccountType() {
+        return this.accountType;
+    }
+
 }
 
 export default Account;

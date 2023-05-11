@@ -14,6 +14,7 @@ import TransferScreen from "../components/TransferScreen";
 import LoanPlatformScreen from "../components/LoanPlatformScreen";
 
 
+
 const tabs = ["Accounts", "Transfer", "Stock Market", "Loans", "Sign out"];
 
 

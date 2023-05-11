@@ -44,7 +44,7 @@ const TransferScreen = ({ user, bank }) => {
             const accounts = Array.from(user.getUserAccounts().values());
             setUserAccounts(accounts);
             if (accounts.length > 0) {
-                setFromAccount(accounts[0].getAccountNumber());
+                setFromAccount(accounts[0].accountNumber);
             }
         }
     }, [user]);
@@ -173,6 +173,3 @@ const styles = StyleSheet.create({
 });
 
 export default TransferScreen;
-
-
-
