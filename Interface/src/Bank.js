@@ -1,5 +1,6 @@
 import User from "../src/User";
 import Account from "./Account";
+import DataBase from "./DataBase";
 
 class Bank {
     constructor(clearingNumber) {
@@ -9,7 +10,8 @@ class Bank {
         this.totalCapitalLoanedOut = 0;
         this.accounts = new Map();
         this.users = new Map();
-        this.accountNumberCounter = 0;
+
+        this.initAccountNumberCounter();
 
         let patientZero = new User("021101", "Alexander Järvheden", "123");
         this.users.set(patientZero.getId(), patientZero)
@@ -21,6 +23,14 @@ class Bank {
         this.transfers = new Map();
 
     }
+
+    async initAccountNumberCounter() {
+        const counter = await DataBase.getAccountNumberCounter("ceriseBank");
+        if (counter === null) {
+            DataBase.storeAccountNumberCounter("ceriseBank", 1);
+        }
+    }
+
 
     newUser(personalNumber, password, name) {
         const newUser = new User(personalNumber, name, password);
@@ -68,20 +78,18 @@ class Bank {
     //     return newAccount;
     // }
 
-    createAccount(accountType, user) {
-        const accountNumber = this.generateUniqueAccountNumber();
+    async createAccount(accountType, user) {
+        const accountNumber = await this.generateUniqueAccountNumber();
         const newAccount = new Account(accountNumber, accountType, user);
-        console.log("newAccount:", newAccount); // Check if newAccount object is created as expected
-    
+
         this.accounts.set(accountNumber, newAccount);
-        console.log("user:", user); // Check if user object is defined and has expected value
-        const user2 = new User("123", "John Doe", "password");
-        console.log(user2 instanceof User);
-        console.log(user instanceof User);
-        user.addAccount(newAccount); // Check if user object has the addAccount method and is callable
+        user.addAccount(newAccount);
+
+        await DataBase.storeUser(user.getId(), user); // Add 'await' here
+
         return newAccount;
     }
-    
+
 
     validateTransfer(fromAccount, toAccount) {
         // Assuming 'users' is a Map with personal numbers as keys and User objects as values
@@ -131,10 +139,12 @@ class Bank {
         return this.accounts.get(accountNumber);
     }
 
-    generateUniqueAccountNumber() {
-        const uniqueNumber = this.accountNumberCounter;
-        this.accountNumberCounter++;
-        return uniqueNumber.toString().padStart(10, '0');
+    async generateUniqueAccountNumber() {
+        let accountNumberCounter = await DataBase.getAccountNumberCounter("ceriseBank");
+        console.log(accountNumberCounter);
+        accountNumberCounter++;
+        await DataBase.storeAccountNumberCounter("ceriseBank", accountNumberCounter); // Add 'await' here
+        return accountNumberCounter.toString().padStart(10, '0');
     }
 
     removeAccount(accountNumber) {
