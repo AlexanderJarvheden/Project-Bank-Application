@@ -5,10 +5,13 @@ class User {
         this.name = name;
         this.password = password;
         this.userAccounts = new Map();
+        this.incomingTransfers = [];
+        this.scheduledTransfers = [];
+        this.outgoingTransfers = [];
     }
 
-    signIn(id, password){
-        if(id == this.id && password == this.password){
+    signIn(id, password) {
+        if (id == this.id && password == this.password) {
             return true;
         }
         return false;
@@ -39,6 +42,34 @@ class User {
 
     removeAccount(accountNumber) {
         this.userAccounts.delete(accountNumber);
+    }
+
+    getIncomingTransfers() {
+        // Return incoming transfers
+        return this.incomingTransfers;
+    }
+
+    getScheduledTransfers() {
+        // Return scheduled transfers
+        return this.scheduledTransfers;
+    }
+
+    getOutgoingTransfers() {
+        // Return outgoing transfers
+        return this.outgoingTransfers;
+    }
+
+    // Add methods to add transfers to the respective arrays:
+    addIncomingTransfer(transfer) {
+        this.incomingTransfers.push(transfer);
+    }
+
+    addScheduledTransfer(transfer) {
+        this.scheduledTransfers.push(transfer);
+    }
+
+    addOutgoingTransfer(transfer) {
+        this.outgoingTransfers.push(transfer);
     }
 }
 
