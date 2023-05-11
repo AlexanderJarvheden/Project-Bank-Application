@@ -109,7 +109,8 @@ const JobDetails = () => {
                 </Text>
               </TouchableOpacity>
             </View>
-            <CreateNewUser Bank={ceriseBank} created={setShowCreateNewUser} />
+            {showCreateNewUser && (<CreateNewUser Bank={ceriseBank} created={setShowCreateNewUser} />)}
+
             <TouchableOpacity style={styles.button} onPress={showAllUsers}>
               <View style={styles.buttonContainer}>
               </View>

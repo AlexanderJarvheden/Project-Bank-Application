@@ -1,7 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import User from './User';
 
-
 class Database {
   static async storeUser(key, value) {
     try {
@@ -29,11 +28,7 @@ class Database {
         // For example, if you have a property called 'userAccounts':
         if (userData.userAccounts) {
           for (const accountNumber in userData.userAccounts) {
-            const accountData = userData.userAccounts[accountNumber];
-            const account = new Account(accountData.accountNumber, accountData.accountType, user);
-            // Assign other properties if necessary
-            account.balance = accountData.balance;
-            user.userAccounts.set(accountNumber, account);
+            user.userAccounts.set(accountNumber, userData.userAccounts[accountNumber]);
           }
         }
         return user;
