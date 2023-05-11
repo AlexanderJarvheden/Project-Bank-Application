@@ -10,16 +10,14 @@ const CreateNewAccount = ({ bank, created, user }) => {
     const [accountType, setAccountType] = useState('');
     const [name, setName] = useState('');
 
-    const handleCreateNewAccount = async () => {
-        const newAccount = await bank.createAccount(accountType, user); // Add 'await' here
-        setAccountNumber(newAccount.getAccountNumber());
-        Alert.alert(
-            'Successful!',
-            'Your new account ' + name + " has the account number: " + bank.getClearingNumber() + "-" + accountNumber
-        );
+    const handleCreateNewAccount = () => {
+        const newAccount = bank.createAccount(accountType, user
+            // , interestRate
+            );
+        setAccountNumber(newAccount.getAccountNumber())
+        Alert.alert('Successful!', 'Your new account ' + name + " has the account number: " + bank.getClearingNumber() + "-" + accountNumber);
         created(false);
     };
-
 
     return (
         <View style={styles.container}>
