@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import User from './User';
 
 class Database {
+
   static async storeUser(key, user) {
     try {
       if (user === null || user === undefined) {
@@ -19,7 +20,6 @@ class Database {
       console.error('Error storing user data:', error);
     }
   }
-
 
   static async storeAccountNumberCounter(bank, value) {
     try {
@@ -61,6 +61,13 @@ class Database {
 
       if (userData) {
         const user = new User(userData.id, userData.name, userData.password);
+        // Re-assign other properties if necessary
+        // For example, if you have a property called 'userAccounts':
+        // if (userData.userAccounts) {
+          // for (const accountNumber in userData.userAccounts) {
+            //user.userAccounts.set(accountNumber, userData.userAccounts[accountNumber]);
+          //}
+        //}
         user.userAccounts = Object.entries(userData.userAccounts).reduce((map, [key, value]) => {
           map.set(key, value); // convert the Object back to a Map
           return map;
@@ -78,7 +85,9 @@ class Database {
     }
   }
 
-
+  static async removeAccountNumberCounter(bank) {
+    await AsyncStorage.removeItem(bank);
+  }
 
   static async removeAccountNumberCounter(bank) {
     await AsyncStorage.removeItem(bank);

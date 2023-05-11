@@ -65,7 +65,8 @@ const JobDetails = () => {
   const displayTabContent = () => {
     switch (activeTab) {
       case "Accounts":
-        return <AccountScreen bank={ceriseBank} signedInUser={signedInUser} title="Accounts" />
+        return <AccountScreen bank={ceriseBank} signedInUser={signedInUser}
+          title="Accounts" />
       case "Transfer":
         return <TransferScreen bank={ceriseBank} user={signedInUser} title="Transfer" />
       case "Stock Market":
@@ -114,6 +115,7 @@ const JobDetails = () => {
                 </Text>
               </TouchableOpacity>
             </View>
+            {showCreateNewUser && (<CreateNewUser Bank={ceriseBank} created={setShowCreateNewUser} />)}
             {/* {showCreateNewUser && (<CreateNewUser Bank={ceriseBank} created={setShowCreateNewUser} />)} */}
             {/* {showCreateNewUser && (
               <View style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0 }}>
@@ -132,7 +134,6 @@ const JobDetails = () => {
                 }} />
               </View>
             </Modal>
-
 
             <TouchableOpacity style={styles.button} onPress={showAllUsers}>
               <View style={styles.buttonContainer}>

@@ -13,11 +13,13 @@ const CreateNewAccount = ({ bank, created, user }) => {
     const [name, setName] = useState('');
 
     const handleCreateNewAccount = async () => {
+
         const newAccount = await bank.createAccount(accountType, user);
         setAccountNumber(newAccount.getAccountNumber());
         Alert.alert('Successful!', 'Your new account ' + name + " has the account number: " + bank.getClearingNumber() + "-" + newAccount.getAccountNumber());
         created(true);
     };
+
 
     return (
         <View style={styles.container}>

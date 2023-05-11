@@ -36,8 +36,10 @@ class User {
     addAccount(account) {
         console.log(`Adding account ${account.getAccountNumber()} to user ${this.id}`);
         this.userAccounts.set(account.getAccountNumber(), account.toJSON());
+        // console.log(`User accounts after adding account: ${JSON.stringify(this.userAccounts)}`);
         console.log(`User accounts after adding account:`, [...this.userAccounts]);
     }
+
 
     removeAccount(accountNumber) {
         this.userAccounts.delete(accountNumber);

@@ -1,4 +1,5 @@
 class LoanPlatform {
+
     constructor() {
         this.loans = new Map();
     }

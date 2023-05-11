@@ -6,6 +6,7 @@ import User from '../../src/User';
 
 const AccountScreen = ({ bank, signedInUser }) => {
   const [createAccount, setCreateAccount] = useState(false);
+
   const [accounts, setAccounts] = useState([]);
 
   useEffect(() => {
@@ -21,6 +22,9 @@ const AccountScreen = ({ bank, signedInUser }) => {
 
 
   const renderAccount = ({ item }) => (
+    <View style={{ padding: 10 }}>
+      <Text style={{ fontFamily: FONT.bold, fontSize: 18 }}>{item.name}</Text>
+      <Text style={{ fontFamily: FONT.regular, fontSize: 16 }}>Balance: ${item.balance}</Text>
     <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 10 }}>
       <View>
         <Text style={{ fontFamily: FONT.bold, fontSize: 18 }}>{item.accountType}</Text>
