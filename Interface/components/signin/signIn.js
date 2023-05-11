@@ -1,22 +1,16 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { COLORS } from '../../constants';
-import { Stack, Link, Route } from 'expo-router';
-import { useNavigation } from '@react-navigation/native';
-import CreateNewUser from './createNewUser';
-import { createStackNavigator } from '@react-navigation/stack';
 import Database from '../../src/DataBase';
 
 const SignIn = ({ Bank, onSignIn }) => {
-  const [personalNumber, setpersonalNumber] = useState('');
+  const [personalNumber, setPersonalNumber] = useState('');
   const [password, setPassword] = useState('');
 
   const handleSignIn = async () => {
     const user = await Database.getUser(personalNumber);
     if (user && user.password === password) {
-      //onSignIn(personalNumber, password);
       onSignIn(personalNumber, password);
-      // onSignIn(user);
     } else {
       Alert.alert('Error', 'Invalid Personal number or password.');
     }
@@ -24,25 +18,30 @@ const SignIn = ({ Bank, onSignIn }) => {
 
   return (
     <View style={styles.container}>
-      <TextInput
-        style={{ ...styles.input, color: 'white' }}
-        placeholder="Personal number"
-        onChangeText={setpersonalNumber}
-        value={personalNumber}
-        autoCapitalize="none"
-        keyboardType="number-pad"
-      />
-      <TextInput
-        style={{ ...styles.input, color: 'white' }}
-        placeholder="Password"
-        onChangeText={setPassword}
-        value={password}
-        secureTextEntry
-      />
+      <Text style={styles.title}>Sign In</Text>
+      <View style={styles.formGroup}>
+        <Text style={styles.label}>Personal number</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Enter personal number"
+          onChangeText={setPersonalNumber}
+          value={personalNumber}
+          autoCapitalize="none"
+          keyboardType="number-pad"
+        />
+      </View>
+      <View style={styles.formGroup}>
+        <Text style={styles.label}>Password</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Enter password"
+          onChangeText={setPassword}
+          value={password}
+          secureTextEntry
+        />
+      </View>
       <TouchableOpacity style={styles.button} onPress={handleSignIn}>
-        <View style={styles.buttonContainer}>
-          <Text style={styles.buttonText}>Sign in</Text>
-        </View>
+        <Text style={styles.buttonText}>Sign in</Text>
       </TouchableOpacity>
     </View>
   );
@@ -53,32 +52,44 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
+    backgroundColor: COLORS.blue,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    color: COLORS.white,
+    textAlign: 'center',
+  },
+  formGroup: {
+    marginBottom: 10,
+    width: '80%',
+  },
+  label: {
+    fontSize: 16,
+    marginBottom: 5,
+    color: COLORS.white,
+    textAlign: 'center',
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
+    borderColor: COLORS.white,
+    borderRadius: 4,
     padding: 10,
-    marginBottom: 10,
-    width: '100%',
+    color: COLORS.black,
+    textAlign: 'center',
   },
   button: {
-    width: '100%',
+    backgroundColor: COLORS.cerise,
+    padding: 15,
+    borderRadius: 8,
     alignItems: 'center',
-    marginTop: 20,
-  },
-  buttonContainer: {
-    backgroundColor: COLORS.red,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-    elevation: 3,
+    marginBottom: 20,
+    width: '80%',
   },
   buttonText: {
-    color: COLORS.lightWhite,
-    fontSize: 18,
-    fontWeight: 'bold',
+    color: COLORS.white,
+    fontSize: 16,
     textAlign: 'center',
   },
 });
