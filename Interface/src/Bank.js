@@ -77,20 +77,16 @@ class Bank {
     // }
 
     async createAccount(accountType, user) {
-        const accountNumber = await this.generateUniqueAccountNumber(); // Add 'await' here
+        const accountNumber = await this.generateUniqueAccountNumber();
         const newAccount = new Account(accountNumber, accountType, user);
-        console.log("newAccount:", newAccount); // Check if newAccount object is created as expected
 
         this.accounts.set(accountNumber, newAccount);
-        console.log("user:", user.getUserAccounts()); // Check if user object is defined and has expected value
-        user.addAccount(newAccount); // Check if user object has the addAccount method and is callable
+        user.addAccount(newAccount);
 
-        // Store the updated user data in the database
-        DataBase.storeUser(user.getId(), user);
+        await DataBase.storeUser(user.getId(), user); // Add 'await' here
 
         return newAccount;
     }
-
 
 
     getAccount(accountNumber) {
