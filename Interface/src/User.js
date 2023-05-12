@@ -35,10 +35,10 @@ class User {
 
     addAccount(account) {
         console.log(`Adding account ${account.getAccountNumber()} to user ${this.id}`);
-        this.userAccounts.set(account.getAccountNumber(), account.toJSON());
-        // console.log(`User accounts after adding account: ${JSON.stringify(this.userAccounts)}`);
+        this.userAccounts.set(account.getAccountNumber(), account);
         console.log(`User accounts after adding account:`, [...this.userAccounts]);
     }
+
 
 
     removeAccount(accountNumber) {
@@ -50,9 +50,10 @@ class User {
             id: this.id,
             name: this.name,
             password: this.password,
-            userAccounts: Array.from(this.userAccounts.entries()).map(([k, v]) => [k, v.toJSON()]),
+            userAccounts: Array.from(this.userAccounts.entries()).map(([k, v]) => [k, v]),
         };
     }
+
 
     mapToJson(map) {
         return JSON.stringify([...map]);
@@ -89,8 +90,31 @@ class User {
     addOutgoingTransfer(transfer) {
         this.outgoingTransfers.push(transfer);
     }
+
+    getAccount(accountNumber) {
+        return this.userAccounts.get(accountNumber);
+    }
+
+    performTransfer(fromAccountNumber, toAccountNumber, amount) {
+        const fromAccount = this.getAccount(fromAccountNumber);
+        const toAccount = this.getAccount(toAccountNumber);
+
+        if (!fromAccount || !toAccount) {
+            throw new Error("Invalid account number");
+        }
+
+        if (amount <= 0 || fromAccount.balance < amount) {
+            throw new Error("Invalid amount");
+        }
+
+        fromAccount.balance -= amount;
+        toAccount.balance += amount;
+    }
+
+    static fromJSON(json) {
+        const user = Object.assign(new User(), json);
+        user.userAccounts = new Map(json.userAccounts.map(([k, v]) => [k, Object.assign(new Account(), v)]));  // replace "Account" with your actual Account class
+        return user;
+    }
 }
-
-
-
 export default User;
