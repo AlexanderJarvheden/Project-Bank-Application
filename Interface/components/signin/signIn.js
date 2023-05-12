@@ -21,16 +21,18 @@ const SignIn = ({ Bank, onSignIn }) => {
   return (
     <View style={styles.container}>
       <TextInput
-        style={{ ...styles.input, color: 'white' }}
+        style={{ ...styles.input, color: 'white', width: 250, textAlign: 'center' }}
         placeholder="Personal number"
+        placeholderTextColor={'white'}
         onChangeText={setpersonalNumber}
         value={personalNumber}
         autoCapitalize="none"
         keyboardType="number-pad"
       />
       <TextInput
-        style={{ ...styles.input, color: 'white' }}
+        style={{ ...styles.input, color: 'white', width: 250, textAlign: 'center' }}
         placeholder="Password"
+        placeholderTextColor={'white'}
         onChangeText={setPassword}
         value={password}
         secureTextEntry
@@ -46,10 +48,12 @@ const SignIn = ({ Bank, onSignIn }) => {
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: COLORS.primary,
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
+    marginTop: 120,
   },
   input: {
     borderWidth: 1,
