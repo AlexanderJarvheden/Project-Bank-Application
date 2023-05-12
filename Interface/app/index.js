@@ -16,7 +16,7 @@ import LoanPlatformScreen from "../components/LoanPlatformScreen";
 
 const tabs = ["Accounts", "Transfer", "Stock Market", "Loans"];
 
-const JobDetails = () => {
+const App = () => {
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [signedInUser, setSignedInUser] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
@@ -66,7 +66,7 @@ const JobDetails = () => {
               title: "CeriseBank", headerStyle: { backgroundColor: COLORS.red },
               headerTitleStyle: { fontSize: 30, color: COLORS.white },
               headerRight: () =>
-                  <TouchableOpacity onPress={() => setIsSignedIn(false)}>
+                  <TouchableOpacity onPress={() => refresh()}>
                     <Text style={{ color: COLORS.white, marginRight: 10 }}>Sign out</Text>
                   </TouchableOpacity>
             }}
@@ -130,7 +130,7 @@ const JobDetails = () => {
   )
 }
 
-export default JobDetails
+export default App
 
 const styles = StyleSheet.create({
   container: {
