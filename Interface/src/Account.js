@@ -6,7 +6,7 @@ class Account {
         this.accountNumber = accountNumber;
         this.accountType = accountType;
         this.accountOwner = accountOwner;
-        this.balance = 0;
+        this.balance = 50;
         // this.interestRate = interestRate;
         this.transactionHistory = [];
 
