@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { COLORS } from '../../constants';
 import Database from '../../src/DataBase';
@@ -8,18 +8,23 @@ const CreateNewUser = ({Bank, created}) => { // Removed async keyword
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
 
+
   const handleCreateNewUser = async () => {
     const user = await Database.getUser(personalNumber);
-    if (!user) {
+    if (!user && personalNumber != '' && name != '' && password != '') {
       const newUser = Bank.newUser(personalNumber, password, name);
-      if (newUser) { // Check if newUser is not null or undefined
+      if (newUser) {
         await Database.storeUser(personalNumber, newUser);
         Alert.alert('Successful!', 'Welcome ' + name);
         created(false);
       } else {
         Alert.alert('Error', 'Failed to create new user');
       }
-    } else {
+    } else if (personalNumber == '' || name == '' || password == ''){
+      Alert.alert('Invalid input', '');
+      created(true);
+    }
+    else {
       Alert.alert('Error', 'User already exists');
       created(true);
     }
@@ -28,24 +33,27 @@ const CreateNewUser = ({Bank, created}) => { // Removed async keyword
   return (
     <View style={styles.container}>
       <TextInput
-        style={{ ...styles.input, color: 'white' }}
+        style={{ ...styles.input, color: 'white', textAlign: 'center'  }}
         placeholder="Personal number"
+        placeholderTextColor="#FFF"
         onChangeText={setpersonalNumber}
         value={personalNumber}
         autoCapitalize="none"
         keyboardType="number-pad"
       />
       <TextInput
-        style={{ ...styles.input, color: 'white' }}
+        style={{ ...styles.input, color: 'white', textAlign: 'center'  }}
         placeholder="Name"
+        placeholderTextColor="#FFF"
         onChangeText={setName}
         value={name}
         autoCapitalize="words"
         keyboardType="default"
       />
       <TextInput
-        style={styles.input}
+        style={{...styles.input, color: 'white', textAlign: 'center' }}
         placeholder="Password"
+        placeholderTextColor="#FFF"
         onChangeText={setPassword}
         value={password}
         secureTextEntry
@@ -59,10 +67,13 @@ const CreateNewUser = ({Bank, created}) => { // Removed async keyword
   );
 };
 
+
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: COLORS.primary,
     flex: 1,
-    justifyContent: 'center',
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
     alignItems: 'center',
     padding: 20,
   },

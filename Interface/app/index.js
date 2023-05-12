@@ -1,4 +1,4 @@
-import { ScrollView, View, Text, SafeAreaView, TouchableOpacity, StyleSheet, Modal } from "react-native";
+import { ScrollView, View, Text, SafeAreaView, TouchableOpacity, StyleSheet, Modal, Pressable } from "react-native";
 import { Stack, Link } from 'expo-router'
 import SignIn from "../components/signin/signIn";
 import { COLORS, SIZES } from '../constants';
@@ -22,17 +22,9 @@ const tabs = ["Accounts", "Transfer", "Stock Market", "Loans", "Sign out"];
 const JobDetails = () => {
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [signedInUser, setSignedInUser] = useState('');
-  const [accounts, setAccounts] = useState([]);
-  const [showCreateNewUser, setShowCreateNewUser] = useState(false);
-  const [activeUser, setActiveUser] = useState('');
-  const [isModalVisible, setIsModalVisible] = useState(false);
-
+  const [modalVisible, setModalVisible] = useState(false);
+  
   const ceriseBank = new Bank(1234);
-
-  const showAllUsers = () => {
-    const allUsers = ceriseBank.getAllUsers();
-    console.log(allUsers);
-  }
 
   const handleSignIn = async (personalNumber, password) => {
     const user = await Database.getUser(personalNumber);
@@ -46,18 +38,8 @@ const JobDetails = () => {
 
 
 
-  useEffect(() => {
-    const accounts = [
-      { id: 1, name: 'Checking', balance: '$1,000.00' },
-      { id: 2, name: 'Savings', balance: '$5,000.00' },
-      { id: 3, name: 'Credit Card', balance: '$-500.00' },
-    ];
-    setAccounts(accounts);
-  }, []);
-
   const [activeTab, setActiveTab] = useState(tabs[0]);
   const refresh = () => {
-    setAccounts([]);
     setActiveTab(tabs[0]);
     setIsSignedIn(false);
   };
@@ -109,36 +91,36 @@ const JobDetails = () => {
             />
             <SignIn Bank={ceriseBank} onSignIn={handleSignIn} />
             <View style={{ justifyContent: "center", alignItems: "center" }}>
-              <TouchableOpacity onPress={() => { setShowCreateNewUser(true); setIsModalVisible(true); }}>
+              <TouchableOpacity onPress={() => { setShowCreateNewUser(true); setModalVisible(true); }}>
                 <Text style={{ color: 'white', fontSize: 16, fontFamily: 'Arial', textAlign: 'center' }}>
                   New user? Create an account
                 </Text>
               </TouchableOpacity>
             </View>
-            {showCreateNewUser && (<CreateNewUser Bank={ceriseBank} created={setShowCreateNewUser} />)}
-            {/* {showCreateNewUser && (<CreateNewUser Bank={ceriseBank} created={setShowCreateNewUser} />)} */}
-            {/* {showCreateNewUser && (
-              <View style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0 }}>
-                <CreateNewUser Bank={ceriseBank} created={() => setShowCreateNewUser(false)} />
-              </View>
-            )} */}
 
-            <Modal visible={isModalVisible} animationType='slide'>
-              <View style={styles.modalContent}>
-                <TouchableOpacity onPress={() => setIsModalVisible(false)}>
-                  <Text style={styles.closeButton}>X</Text>
-                </TouchableOpacity>
-                <CreateNewUser Bank={ceriseBank} created={() => {
-                  setShowCreateNewUser(false);
-                  setIsModalVisible(false);
-                }} />
-              </View>
+            <Modal
+              visible={modalVisible}
+              onRequestClose={() => setModalVisible(false)}>
+              <Pressable style={styles.outsideModal}
+                onPress={(event) => {
+                  if (event.target == event.currentTarget) {
+                    setModalVisible(false);
+                  }
+                }} >
+                <View style={styles.modal}>
+                  <View style={styles.modalContent}>
+                    <TouchableOpacity style={styles.button} onPress={() => setModalVisible(false)}>
+                      <View style={styles.buttonContainer}>
+                        <Text style={styles.buttonText}>X</Text>
+                      </View>
+                    </TouchableOpacity>
+                    <CreateNewUser Bank={ceriseBank} created={setModalVisible} />
+                  </View>
+                </View>
+              </Pressable>
             </Modal>
 
-            <TouchableOpacity style={styles.button} onPress={showAllUsers}>
-              <View style={styles.buttonContainer}>
-              </View>
-            </TouchableOpacity>
+
           </View>
         </ScrollView>
       )
@@ -148,22 +130,70 @@ const JobDetails = () => {
 }
 
 export default JobDetails
+
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: COLORS.primary,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  modal: {
+    flex: 1,
+    margin: 50,
+    padding: 3,
+    backgroundColor: COLORS.secondary,
+    shadowColor: "black",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  /* The content of the modal takes all the vertical space not used by the header. */
+  modalContent: {
+    backgroundColor: COLORS.primary,
+    flex: 1,
+    borderWidth: 1,
+    borderColor: "black"
+  },
+  modalHeader: {
+    flexDirection: "row",
+    borderWidth: 1,
+    borderColor: "white"
+  },
+  /* The header takes up all the vertical space not used by the close button. */
+  modalHeaderContent: {
+    flexGrow: 1,
+  },
+  modalHeaderCloseText: {
+    textAlign: "center",
+    paddingLeft: 5,
+    paddingRight: 5
+  },
+  outsideModal: {
+    backgroundColor: COLORS.primary,
+    flex: 1,
+  },
   button: {
     width: '100%',
-    alignItems: 'center',
+    alignItems: 'left',
     marginTop: 20,
+    marginLeft: 20
   },
-  modalContent: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+  buttonContainer: {
+    backgroundColor: COLORS.red,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    elevation: 3,
   },
-  closeButton: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
-    fontSize: 24,
+  buttonText: {
+    color: COLORS.lightWhite,
+    fontSize: 18,
     fontWeight: 'bold',
+    textAlign: 'center',
   },
 })
