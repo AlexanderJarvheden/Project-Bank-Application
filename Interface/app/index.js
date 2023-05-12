@@ -46,6 +46,7 @@ const JobDetails = () => {
 
 
 
+
   useEffect(() => {
     const accounts = [
       { id: 1, name: 'Checking', balance: '$1,000.00' },
