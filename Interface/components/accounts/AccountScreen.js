@@ -18,8 +18,7 @@ const AccountScreen = ({ bank, signedInUser }) => {
         console.error('getUserAccounts() does not return a Map or object with a values() method');
       }
     }
-  }, [signedInUser]);
-
+  }, [signedInUser, createAccount]);  // Add createAccount to the dependencies
 
   const renderAccount = ({ item }) => (
     <View style={{ padding: 10 }}>
@@ -36,10 +35,11 @@ const AccountScreen = ({ bank, signedInUser }) => {
   );
 
 
-  const handleDeleteAccount = (accountNumber) => {
-    signedInUser.removeAccount(accountNumber);
+  const handleDeleteAccount = async (accountNumber) => {
+    await signedInUser.removeAccount(accountNumber);
     setAccounts(Array.from(signedInUser.getUserAccounts().values()));
   };
+
 
   const handleCreateNewAccount = () => {
     setCreateAccount(true);
