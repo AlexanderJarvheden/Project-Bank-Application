@@ -29,20 +29,21 @@ class User {
         return this.userAccounts;
     }
 
-    // addAccount(account) {
-    //     this.userAccounts.set(account.getAccountNumber(), account);
-    // }
 
-    addAccount(account) {
+    async addAccount(account) {
         console.log(`Adding account ${account.getAccountNumber()} to user ${this.id}`);
-        this.userAccounts.set(account.getAccountNumber(), account.toJSON());
-        // console.log(`User accounts after adding account: ${JSON.stringify(this.userAccounts)}`);
+        this.userAccounts.set(account.getAccountNumber(), account);
         console.log(`User accounts after adding account:`, [...this.userAccounts]);
+
+        // Save changes to the storage
+        await Database.storeUser(this.id, this);
     }
 
-
-    removeAccount(accountNumber) {
+    async removeAccount(accountNumber) {
         this.userAccounts.delete(accountNumber);
+
+        // Save changes to the storage
+        await Database.storeUser(this.id, this);
     }
 
     toJSON() {
@@ -90,7 +91,5 @@ class User {
         this.outgoingTransfers.push(transfer);
     }
 }
-
-
 
 export default User;

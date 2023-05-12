@@ -71,19 +71,20 @@ const TransferScreen = ({ user, bank }) => {
                     </Picker>
 
                     <TextInput
-                        style={styles.input}
+                        style={[styles.input, { color: COLORS.white }]} // Add { color: COLORS.white } to set the text color to white
                         placeholder="To account"
                         placeholderTextColor={COLORS.lightWhite}
                         onChangeText={(text) => setToAccount(text)}
                         value={toAccount}
                     />
                     <TextInput
-                        style={styles.input}
+                        style={[styles.input, { color: COLORS.white }]} // Add { color: COLORS.white } to set the text color to white
                         placeholder="Amount"
                         placeholderTextColor={COLORS.lightWhite}
                         onChangeText={(text) => setTransferAmount(text)}
                         value={transferAmount}
                     />
+
                     <View style={styles.buttonContainer}>
                         <TouchableOpacity style={styles.button} onPress={handleTransfer}>
                             <View style={styles.buttonContainer}>

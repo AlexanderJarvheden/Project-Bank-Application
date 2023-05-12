@@ -6,7 +6,7 @@ class Account {
         this.accountNumber = accountNumber;
         this.accountType = accountType;
         this.accountOwner = accountOwner;
-        this.balance = 0;
+        this.balance = 50;
         // this.interestRate = interestRate;
         this.transactionHistory = [];
 
@@ -16,7 +16,9 @@ class Account {
         return {
             accountNumber: this.accountNumber,
             accountType: this.accountType,
+            accountOwner: this.accountOwner,
             balance: this.balance,
+            transactionHistory: this.transactionHistory,
             // Add other properties if necessary
         };
     }
@@ -36,6 +38,8 @@ class Account {
     }
 
     transfer(destination, amount) {
+        console.log(`Trying to transfer from account ${this.accountNumber} to account ${destination.getAccountNumber()}`);
+
         if (this.withdraw(amount)) {
             destination.deposit(amount);
             this.transactionHistory.push(`Transfer to ${destination.getAccountNumber()}: ${amount}`);

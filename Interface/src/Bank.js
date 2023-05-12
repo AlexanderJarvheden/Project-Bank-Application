@@ -1,6 +1,9 @@
 import User from "../src/User";
 import Account from "./Account";
 import DataBase from "./DataBase";
+import Transfer from "./Transfer";
+import LoanPlatform from "./LoanPlatform";
+
 
 class Bank {
     constructor(clearingNumber) {
@@ -95,6 +98,8 @@ class Bank {
 
 
     performTransfer(fromAccountNumber, toAccountNumber, amount) {
+        fromAccountNumber = fromAccountNumber.toString();
+        toAccountNumber = toAccountNumber.toString();
         const validationResult = this.validateTransfer(fromAccountNumber, toAccountNumber, amount);
 
         if (!validationResult.success) {
@@ -108,6 +113,10 @@ class Bank {
         // Deduct the amount from the 'fromAccount'
         fromAccount.withdraw(amount);
 
+        // Get users owning the accounts
+        const fromUser = fromAccount.accountOwner;
+        const toUser = toAccount.accountOwner;
+
         // Schedule the transfer if outside the 13:00 - 17:00 window
         const now = new Date();
         const hours = now.getHours();
@@ -115,14 +124,20 @@ class Bank {
             const scheduledDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 13, 0, 0);
             scheduledDate.setDate(scheduledDate.getDate() + (scheduledDate.getDay() === 5 ? 3 : 1));
             const transfer = this.createTransfer(fromAccount, toAccount, amount, scheduledDate);
-            fromAccount.userPersonalNumber.getScheduledTransfers().push(transfer);
+            fromUser.addScheduledTransfer(transfer);
         } else {
             // Add the amount to the 'toAccount' and store the transfer
             toAccount.deposit(amount);
             const transfer = this.createTransfer(fromAccount, toAccount, amount, new Date());
-            fromAccount.userPersonalNumber.getIncomingTransfers().push(transfer);
+            fromUser.addOutgoingTransfer(transfer);
+            toUser.addIncomingTransfer(transfer);
         }
+
+        // Store the updated user data in the database
+        DataBase.storeUser(fromUser.getId(), fromUser);
+        DataBase.storeUser(toUser.getId(), toUser);
     }
+
 
 
     createTransfer(fromAccount, toAccount, amount, date) {

@@ -1,5 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import User from './User';
+import Account from './Account'; // This import was missing
+
 
 class Database {
 
@@ -11,9 +13,10 @@ class Database {
       }
 
       let userCopy = Object.assign({}, user);
-      userCopy.userAccounts = [...user.userAccounts].reduce((obj, [key, value]) => (
-        Object.assign(obj, { [key]: value }) // convert the Map to an Object
-      ), {});
+      userCopy.userAccounts = Array.from(user.userAccounts.entries()).reduce((obj, [key, value]) => {
+        obj[key.toString()] = value.toJSON(); // convert the Map to an Object and store only account data, and parse key to string
+        return obj;
+      }, {});
 
       await AsyncStorage.setItem(key, JSON.stringify(userCopy));
     } catch (error) {
@@ -54,22 +57,18 @@ class Database {
 
   static async getUser(personalNumber) {
     try {
-      console.log('Trying to get user with personalNumber:', personalNumber); // Add this line
+      console.log('Trying to get user with personalNumber:', personalNumber);
 
       const jsonString = await AsyncStorage.getItem(personalNumber);
       const userData = jsonString ? JSON.parse(jsonString) : null;
 
       if (userData) {
         const user = new User(userData.id, userData.name, userData.password);
-        // Re-assign other properties if necessary
-        // For example, if you have a property called 'userAccounts':
-        // if (userData.userAccounts) {
-        //   for (const accountNumber in userData.userAccounts) {
-        //     user.userAccounts.set(accountNumber, userData.userAccounts[accountNumber]);
-        //   }
-        // }
         user.userAccounts = Object.entries(userData.userAccounts).reduce((map, [key, value]) => {
-          map.set(key, value); // convert the Object back to a Map
+          const account = new Account(value.accountNumber, value.accountType, value.accountOwner);
+          account.balance = value.balance;
+          account.transactionHistory = value.transactionHistory;
+          map.set(key, account); // convert the Object back to a Map, and key is already string
           return map;
         }, new Map());
 
@@ -84,6 +83,7 @@ class Database {
       return null;
     }
   }
+
 
   static async removeAccountNumberCounter(bank) {
     await AsyncStorage.removeItem(bank);
