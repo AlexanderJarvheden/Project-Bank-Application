@@ -27,6 +27,7 @@ const AccountScreen = ({ bank, signedInUser }) => {
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 10 }}>
         <View>
           <Text style={{ fontFamily: FONT.bold, fontSize: 18 }}>{item.accountType}</Text>
+          <Text style={{ fontFamily: FONT.bold, fontSize: 15 }}>Account Number: {item.accountNumber}</Text>
           <Text style={{ fontFamily: FONT.regular, fontSize: 16 }}>Balance: ${item.balance}</Text>
         </View>
         <Button title="Delete" onPress={() => handleDeleteAccount(item.accountNumber)} />

@@ -144,7 +144,7 @@ class Bank {
         console.log(accountNumberCounter);
         accountNumberCounter++;
         await DataBase.storeAccountNumberCounter("ceriseBank", accountNumberCounter); // Add 'await' here
-        return accountNumberCounter.toString().padStart(10, '0');
+        return accountNumberCounter.toString().padStart(5, '0');
     }
 
     removeAccount(accountNumber) {
