@@ -1,110 +1,87 @@
-import React from 'react';
-import { View, Text, ScrollView, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
-import LoanPlatform from '../src/LoanPlatform';
+import React, { useState, useEffect } from 'react';
+import { ScrollView } from 'react-native-gesture-handler';
+import { Button } from 'react-native-elements';
+import { Stack, Link } from 'expo-router'
+import SignIn from "../components/signin/signIn";
+import { COLORS, FONT, SIZES } from '../constants';
+import { View, Text, TextInput, StyleSheet } from 'react-native';
 
 
-const LoanPlatformScreen = ({ bank, user }) => {
-    const loanPlatform = new LoanPlatform(bank);
 
-    const [loanAmount, setLoanAmount] = React.useState('');
-    const [interestRate, setInterestRate] = React.useState('');
-    const [paymentAmount, setPaymentAmount] = React.useState('');
-
-    const handleCreateLoan = () => {
-        if (loanAmount && interestRate) {
-            loanPlatform.createLoan(user, parseFloat(loanAmount), parseFloat(interestRate));
-            setLoanAmount('');
-            setInterestRate('');
-        }
+const LoanPlatformScreen = ({ signedInUser }) => {
+    const [totalLoans, setTotalLoans] = useState(0);
+    const [totalSavings, setTotalSavings] = useState(0);
+    const [interestRate, setInterestRate] = useState(0);
+    const [amortizedAmount, setAmortizedAmount] = useState(0);
+    const [loanAccount, setLoanAccount] = useState(null);
+    const [loanAmount, setLoanAmount] = useState(0);
+    const [repaymentAmount, setRepaymentAmount] = useState(0);
+    const takeLoan = async (amount) => {
+        // Take a loan from the bank and create a loan account
+        let newLoanAccount = await bank.createLoanAccount(signedInUser, amount);
+        setLoanAccount(newLoanAccount);
     };
 
-    const handleMakePayment = () => {
-        if (paymentAmount) {
-            loanPlatform.makePayment(user, parseFloat(paymentAmount));
-            setPaymentAmount('');
+    const scbRate = 0.5;
+
+    useEffect(() => {
+        // Fetch loan account if it exists
+        let loanAccount = signedInUser.getLoanAccount();
+        if (loanAccount) {
+            setLoanAccount(loanAccount);
+        }
+    }, [signedInUser]);
+
+
+    const repayLoan = (amount) => {
+        // Repay the loan
+        if (loanAccount && amount <= loanAccount.getBalance()) {
+            loanAccount.repay(amount);
+            setLoanAccount({ ...loanAccount }); // Trigger re-render
+        } else {
+            console.error("Invalid repayment amount.");
         }
     };
 
     return (
-        <ScrollView>
-            <View style={styles.container}>
-                <Text style={styles.title}>Loan Platform</Text>
-                <View style={styles.formGroup}>
-                    <Text style={styles.label}>Loan Amount</Text>
-                    <TextInput
-                        style={styles.input}
-                        value={loanAmount}
-                        onChangeText={setLoanAmount}
-                        keyboardType="numeric"
-                        placeholder="Enter loan amount"
-                    />
-                </View>
-                <View style={styles.formGroup}>
-                    <Text style={styles.label}>Interest Rate</Text>
-                    <TextInput
-                        style={styles.input}
-                        value={interestRate}
-                        onChangeText={setInterestRate}
-                        keyboardType="numeric"
-                        placeholder="Enter interest rate"
-                    />
-                </View>
-                <TouchableOpacity onPress={handleCreateLoan} style={styles.button}>
-                    <Text style={styles.buttonText}>Create Loan</Text>
-                </TouchableOpacity>
-                <View style={styles.formGroup}>
-                    <Text style={styles.label}>Payment Amount</Text>
-                    <TextInput
-                        style={styles.input}
-                        value={paymentAmount}
-                        onChangeText={setPaymentAmount}
-                        keyboardType="numeric"
-                        placeholder="Enter payment amount"
-                    />
-                </View>
-                <TouchableOpacity onPress={handleMakePayment} style={styles.button}>
-                    <Text style={styles.buttonText}>Make Payment</Text>
-                </TouchableOpacity>
-            </View>
-        </ScrollView>
+        // ...
+
+        <Text>Loan Amount</Text>
+        <TextInput
+            value={loanAmount.toString()}
+            onChangeText={(text) => setLoanAmount(Number(text))}
+        />
+
+        <Button
+            title="Take Loan"
+            onPress={() => takeLoan(loanAmount)}
+        />
+
+        {
+        loanAccount && (
+            <>
+                <Text>Loan Account: {loanAccount.getAccountNumber()}</Text>
+                <Text>Loan Balance: {loanAccount.getBalance()}</Text>
+
+                <Text>Repayment Amount</Text>
+                <TextInput
+                    value={repaymentAmount.toString()}
+                    onChangeText={(text) => setRepaymentAmount(Number(text))}
+                />
+
+                <Button
+                    title="Repay Loan"
+                    onPress={() => repayLoan(repaymentAmount)}
+                />
+            </>
+        )
+    }
+
+        // ...
+
     );
 };
 
-const styles = StyleSheet.create({
-    container: {
-        paddingHorizontal: 20,
-        paddingTop: 20,
-    },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 20,
-    },
-    formGroup: {
-        marginBottom: 10,
-    },
-    label: {
-        fontSize: 16,
-        marginBottom: 5,
-    },
-    input: {
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 4,
-        padding: 10,
-    },
-    button: {
-        backgroundColor: '#4a69bd',
-        padding: 10,
-        borderRadius: 4,
-        alignItems: 'center',
-        marginBottom: 20,
-    },
-    buttonText: {
-        color: '#fff',
-        fontSize: 16,
-    },
-});
-
 export default LoanPlatformScreen;
+
 

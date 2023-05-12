@@ -116,5 +116,21 @@ class User {
         user.userAccounts = new Map(json.userAccounts.map(([k, v]) => [k, Object.assign(new Account(), v)]));  // replace "Account" with your actual Account class
         return user;
     }
+
+    getTotalSavings() {
+        let totalSavings = 0;
+        for (let account of this.userAccounts.values()) {
+            totalSavings += account.getBalance(); // Assuming the Account class has a getBalance method
+        }
+        return totalSavings;
+    }
+
+    getTotalLoans() {
+        let totalLoans = 0;
+        for (let account of this.userAccounts.values()) {
+            totalLoans += account.getLoans(); // Assuming the Account class has a getLoans method
+        }
+        return totalLoans;
+    }
 }
 export default User;

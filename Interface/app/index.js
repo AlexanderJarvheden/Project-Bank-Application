@@ -14,6 +14,7 @@ import TransferScreen from "../components/TransferScreen";
 import LoanPlatformScreen from "../components/LoanPlatformScreen";
 
 
+
 const tabs = ["Accounts", "Transfer", "Stock Market", "Loans"];
 
 const JobDetails = () => {
@@ -52,7 +53,7 @@ const JobDetails = () => {
           title="Stock Market"
         />
       case "Loans":
-        return <LoanPlatformScreen bank={ceriseBank} user={ceriseBank.users.get(signedInUser)} />
+        return <LoanPlatformScreen signedInUser={signedInUser} bank={Bank} />
       default:
         break;
     }
@@ -63,14 +64,14 @@ const JobDetails = () => {
       {isSignedIn ? (
         <View style={{ flex: 1 }}>
           <Stack.Screen options={{
-              title: "CeriseBank", headerStyle: { backgroundColor: COLORS.red },
-              headerTitleStyle: { fontSize: 30, color: COLORS.white },
-              headerRight: () =>
-                  <TouchableOpacity onPress={() => setIsSignedIn(false)}>
-                    <Text style={{ color: COLORS.white, marginRight: 10 }}>Sign out</Text>
-                  </TouchableOpacity>
-            }}
-            />
+            title: "CeriseBank", headerStyle: { backgroundColor: COLORS.red },
+            headerTitleStyle: { fontSize: 30, color: COLORS.white },
+            headerRight: () =>
+              <TouchableOpacity onPress={() => setIsSignedIn(false)}>
+                <Text style={{ color: COLORS.white, marginRight: 10 }}>Sign out</Text>
+              </TouchableOpacity>
+          }}
+          />
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={{ padding: SIZES.medium, paddingBottom: 100 }}>
               {displayTabContent()}

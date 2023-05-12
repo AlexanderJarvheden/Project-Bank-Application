@@ -1,15 +1,12 @@
 class Account {
 
-    constructor(accountNumber, accountType, accountOwner
-        // , interestRate
-    ) {
+    constructor(accountNumber, accountType, accountOwner) {
         this.accountNumber = accountNumber;
         this.accountType = accountType;
         this.accountOwner = accountOwner;
         this.balance = 50;
-        // this.interestRate = interestRate;
+        this.loans = 0; // New property for loans
         this.transactionHistory = [];
-
     }
 
     toJSON() {
@@ -59,6 +56,36 @@ class Account {
     getAccountNumber() {
         return this.accountNumber;
     }
+
+    addLoan(amount) {
+        this.loans += amount;
+        this.transactionHistory.push(`Loan added: ${amount}`);
+    }
+
+    payOffLoan(amount) {
+        if (amount <= this.balance) {
+            this.balance -= amount;
+            this.loans -= amount;
+            this.transactionHistory.push(`Loan paid off: ${amount}`);
+            return true;
+        }
+        return false;
+    }
+
+    getLoans() {
+        return this.loans;
+    }
+
+    repay(amount) {
+        if (this.balance >= amount) {
+            this.withdraw(amount);
+        } else {
+            throw new Error('Repayment amount exceeds balance.');
+        }
+    }
+
+
+
 }
 
 export default Account;

@@ -2,6 +2,7 @@ import User from "../src/User";
 import Account from "./Account";
 import DataBase from "./DataBase";
 
+
 class Bank {
     constructor(clearingNumber) {
         this.clearingNumber = clearingNumber;
@@ -12,9 +13,6 @@ class Bank {
         this.users = new Map();
 
         this.initAccountNumberCounter();
-
-        let patientZero = new User("021101", "Alexander Järvheden", "123");
-        this.users.set(patientZero.getId(), patientZero)
 
         this.accountTypes = new Map();
         this.accountTypes.set("Savings account", 0.75);
@@ -199,6 +197,20 @@ class Bank {
         const uniqueId = this.loanPlatformIdCounter;
         this.loanPlatformIdCounter++;
         return uniqueId.toString().padStart(10, '0');
+    }
+
+    createLoanAccount(user, amount) {
+        // Create a loan account
+        const account = this.createAccount('Loan', user);
+        account.deposit(amount);  // Deposit the loan amount to the account
+        user.setLoanAccount(account); // Set the loan account for the user
+        return account;
+    }
+
+    calculateLoanInterestRate(user, principal) {
+        // Calculate interest rate based on user's risk status and principal
+        // This is just a placeholder, replace it with your own logic
+        return 0.05; // 5% for example
     }
 }
 export default Bank;
