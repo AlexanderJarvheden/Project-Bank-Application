@@ -1,20 +1,76 @@
-import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, ScrollView, TextInput, Text } from 'react-native';
-import { ListItem, Icon, Button } from 'react-native-elements';
-import {COLOR, FONT, SIZES} from "../../constants/theme";
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  TextInput,
+  Text,
+  Alert,
+  Modal,
+  TouchableHighlight,
+} from "react-native";
+import { ListItem, Icon, Button } from "react-native-elements";
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { COLORS } from "../../constants";
 
 const StockMarketTab = () => {
-const apiKey = 'YOUR_API_KEY';
-const popularStockSymbols = ['AAPL', 'GOOGL', 'MSFT', 'AMZN', 'TSLA', 'FB', 'BRK-B', 'JPM', 'JNJ', 'V'];
+  const apiKey = "YOUR_API_KEY";
+  const popularStockSymbols = [
+    "AAPL",
+    "GOOGL",
+    "MSFT",
+    "AMZN",
+    "TSLA",
+    "FB",
+    "BRK-B",
+    "JPM",
+    "JNJ",
+    "V",
+  ];
 
-const [popularStocks, setPopularStocks] = useState([]);
-const [searchResults, setSearchResults] = useState([]);
-const [searchText, setSearchText] = useState('');
-const [balance, setBalance] = useState(10000);
-const [portfolio, setPortfolio] = useState([]);
+  const [popularStocks, setPopularStocks] = useState([]);
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchText, setSearchText] = useState("");
+  const [balance, setBalance] = useState(10000);
+  const [portfolio, setPortfolio] = useState([]);
 
-  // Fetch popular stocks on component mount
+  const [modalVisible, setModalVisible] = useState(false);
+  const [inputValue, setInputValue] = useState("");
+  const [selectedStock, setSelectedStock] = useState(null);
+  const [transactionType, setTransactionType] = useState(null);
+
+  const FONT = {
+    medium: "Your-Medium-Font-Name",
+    regular: "Your-Regular-Font-Name",
+  };
+  useEffect(() => {
+    const loadBalanceAndPortfolio = async () => {
+      const storedBalance = await AsyncStorage.getItem('balance');
+      const storedPortfolio = await AsyncStorage.getItem('portfolio');
+
+      if (storedBalance !== null) {
+        setBalance(parseFloat(storedBalance));
+      }
+
+      if (storedPortfolio !== null) {
+        setPortfolio(JSON.parse(storedPortfolio));
+      }
+    };
+
+    loadBalanceAndPortfolio();
+  }, []);
+
+  // Save the balance and portfolio to AsyncStorage whenever they change
+  useEffect(() => {
+    const saveBalanceAndPortfolio = async () => {
+      await AsyncStorage.setItem('balance', balance.toString());
+      await AsyncStorage.setItem('portfolio', JSON.stringify(portfolio));
+    };
+
+    saveBalanceAndPortfolio();
+  }, [balance, portfolio]);
+
   useEffect(() => {
     const fetchPopularStocks = async () => {
       const promises = popularStockSymbols.map((symbol) =>
@@ -30,210 +86,347 @@ const [portfolio, setPortfolio] = useState([]);
 
     fetchPopularStocks();
   }, []);
-/*
-  const fetchPopularStocks = async () => {
-    const fetchStock = async (symbol) => {
-      try {
-        const response = await axios.get(`https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${apiKey}`);
-        return response.data['Global Quote'];
-      } catch (error) {
-        console.error(`Error fetching stock: ${symbol}`, error);
-        return null;
-      }
-    };
-  
-    const fetchWithRetry = async (symbol, retries = 3) => {
-      for (let i = 0; i < retries; i++) {
-        const stock = await fetchStock(symbol);
-        if (stock) return stock;
-      }
-      return null;
-    };
-  
-    const promises = popularStockSymbols.map((symbol) => fetchWithRetry(symbol));
-    const results = await Promise.all(promises);
-    const stocks = results.filter((stock) => stock !== null);
-    setPopularStocks(stocks);
-  };
-  */
-  
- /*const fetchPopularStocks = async () => {
-    const promises = popularStockSymbols.map(symbol =>
-      axios.get(`https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${apiKey}`),
-    );
-  
-    const results = await Promise.all(promises);
-    const stocks = results
-      .map(res => res.data['Global Quote'])
-      .filter(stock => Object.keys(stock).length > 0); // Filter out stocks with missing data
-    setPopularStocks(stocks);
-  }*/
 
-  /*const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-  const fetchPopularStocks = async () => {
-    const stocks = [];
-  
-    for (const symbol of popularStockSymbols) {
-      try {
-        const response = await axios.get(
-          `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${apiKey}`
-        );
-        const stockData = response.data['Global Quote'];
-        if (Object.keys(stockData).length > 0) {
-          stocks.push(stockData);
-        }
-      } catch (error) {
-        console.error(`Error fetching stock data for ${symbol}:`, error);
-      }
-      await delay(15000); // Wait for 15 seconds between requests to stay within rate limits
-    }
-
-    setPopularStocks(stocks);
-  };  */
-
-  // Search stocks based on input
   const searchStocks = async () => {
     const response = await axios.get(
       `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${searchText}&apikey=${apiKey}`
     );
-    setSearchResults(response.data.bestMatches);
+
+    const bestMatches = response.data.bestMatches || [];
+
+    const pricePromises = bestMatches.map((stock) =>
+      axios.get(
+        `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${stock["1. symbol"]}&apikey=${apiKey}`
+      )
+    );
+
+    const priceResults = await Promise.all(pricePromises);
+
+    const resultsWithPrice = bestMatches.map((stock, index) => {
+      const priceData = priceResults[index].data["Global Quote"];
+      return {
+        ...stock,
+        price: priceData ? priceData["05. price"] : "N/A",
+      };
+    });
+
+    setSearchResults(resultsWithPrice);
   };
 
-  // Buy stock functionality
-  const buyStock = (symbol, price) => {
-    // Implement your buy stock logic here
+  const handleBuyStock = (symbol, price) => {
+    setSelectedStock({ symbol, price });
+    setTransactionType("buy");
+    setModalVisible(true);
   };
 
-  // Sell stock functionality
-  const sellStock = (symbol, price) => {
-    // Implement your sell stock logic here
+  const handleSellStock = (symbol) => {
+    setSelectedStock({ symbol });
+    setTransactionType("sell");
+    setModalVisible(true);
+  };
+
+  const buyStock = (symbol, price, quantity) => {
+    const totalCost = price * quantity;
+    if (balance >= totalCost) {
+      setBalance((prevBalance) => prevBalance - totalCost);
+      setPortfolio((prevPortfolio) => [
+        ...prevPortfolio,
+        { symbol: symbol, price: price, quantity: quantity },
+      ]);
+    } else {
+      alert("Insufficient balance to buy this stock.");
+    }
+  };
+
+  const sellStock = (symbol, quantity) => {
+    const index = portfolio.findIndex((stock) => stock.symbol === symbol);
+    if (index !== -1) {
+      if (quantity > portfolio[index].quantity) {
+        alert("You don't have that many stocks to sell.");
+        return;
+      }
+      const totalCost = portfolio[index].price * quantity;
+      setBalance((prevBalance) => prevBalance + totalCost);
+      if (quantity === portfolio[index].quantity) {
+        setPortfolio((prevPortfolio) => {
+          let newPortfolio = [...prevPortfolio];
+          newPortfolio.splice(index, 1);
+          return newPortfolio;
+        });
+      } else {
+        setPortfolio((prevPortfolio) => {
+          let newPortfolio = [...prevPortfolio];
+          newPortfolio[index].quantity -= quantity;
+          return newPortfolio;
+        });
+      }
+    } else {
+      alert("You do not own this stock.");
+    }
+  };
+
+  const handleTransaction = () => {
+    const quantity = parseInt(inputValue);
+    if (isNaN(quantity) || quantity < 1) {
+      alert("Please enter a valid number of stocks.");
+      return;
+    }
+    if (transactionType === "buy") {
+      buyStock(selectedStock.symbol, selectedStock.price, quantity);
+    } else if (transactionType === "sell") {
+      sellStock(selectedStock.symbol, quantity);
+    }
+    setInputValue("");
+    setModalVisible(false);
   };
 
   return (
     <View style={styles.container}>
-      <View style={styles.content}>
-      <View style={styles.balanceContainer}>
-        <Icon name="account-balance-wallet" type="material" />
-        <Text style={styles.balanceText}>Balance: ${balance.toFixed(2)}</Text>
-      </View>
-      <TextInput
-        style={styles.searchInput}
-        onChangeText={(text) => setSearchText(text)}
-        onSubmitEditing={searchStocks}
-        value={searchText}
-        placeholder="Search for stocks"
-      />
-      <ScrollView>
-        {searchText === "" && (
-          <View style={{flex: 0}}>
-            <Text style={styles.sectionTitle}>Popular Stocks</Text>
-            {popularStocks.map((stock, index) => (
-              <ListItem key={index} bottomDivider containerStyle={styles.listItemContainer}>
-                <ListItem.Content>
-                  {/* <ListItem.Title>{stock['01. symbol']}</ListItem.Title> */}
-                  <ListItem.Title style={styles.stockText}>{stock && stock['01. symbol']}</ListItem.Title>
-                  <ListItem.Subtitle style={styles.stockInfo}>${stock && parseFloat(stock['05. price']).toFixed(2)}</ListItem.Subtitle>
-                </ListItem.Content>
-                <Button
-                  title="Buy"
-                  onPress={() =>
-                    buyStock(stock["01. symbol"], stock["05. price"])
-                  }
-                />
-                <Button
-                  title="Sell"
-                  onPress={() =>
-                    sellStock(stock["01. symbol"], stock["05. price"])
-                  }
-                />
-              </ListItem>
-            ))}
+      <Modal animationType="slide" transparent={true} visible={modalVisible}>
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>
+              Enter the number of stocks you want to {transactionType}
+            </Text>
+            <TextInput
+              style={styles.modalInput}
+              onChangeText={(text) => setInputValue(text)}
+              value={inputValue}
+              keyboardType="numeric"
+            />
+            <TouchableHighlight
+              style={{ ...styles.openButton, backgroundColor: "#2196F3" }}
+              onPress={handleTransaction}
+            >
+              <Text style={styles.textStyle}>Confirm</Text>
+            </TouchableHighlight>
           </View>
-        )}
-        {searchText !== '' && (
-          <View >
-            <Text style={styles.sectionTitle}>Search Results</Text>
-            {searchResults.map((stock, index) => (
-              <ListItem key={index} bottomDivider containerStyle={styles.listItemContainer}>
-                <ListItem.Content>
-                  <ListItem.Title style={styles.stockText}>{stock['1. symbol']}</ListItem.Title>
-                  <ListItem.Subtitle style={styles.stockInfo}>{stock['2. name']}</ListItem.Subtitle>
-                </ListItem.Content>
-                <Button
-                  title="Buy"
-                  onPress={() => buyStock(stock['1. symbol'], stock['2. name'])}
-                />
-                <Button
-                  title="Sell"
-                  onPress={() => sellStock(stock['1. symbol'], stock['2. name'])}
-                />
-              </ListItem>
-            ))}
-          </View>
-        )}
-        <View>
-          <Text style={styles.sectionTitle}>My Portfolio</Text>
-          {portfolio.map((stock, index) => (
-            <ListItem key={index} bottomDivider>
-              <ListItem.Content>
-                <ListItem.Title>{stock.symbol}</ListItem.Title>
-                <ListItem.Subtitle>
-                  {stock.shares} shares @ ${parseFloat(stock.price).toFixed(2)}
-                </ListItem.Subtitle>
-              </ListItem.Content>
-              <Button title="Sell" onPress={() => sellStock(stock.symbol, stock.price)} />
-            </ListItem>
-          ))}
         </View>
-      </ScrollView>
-      </View>
+      </Modal>
+      {
+        <>
+          <View style={styles.balanceContainer}>
+            <Icon name="account-balance-wallet" type="material" />
+            <Text style={styles.balanceText}>
+              Balance: ${balance.toFixed(2)}
+            </Text>
+          </View>
+          <TextInput
+            style={styles.searchInput}
+            onChangeText={(text) => setSearchText(text)}
+            onSubmitEditing={searchStocks}
+            value={searchText}
+            placeholder="Search for stocks"
+          />
+          <ScrollView>
+            {searchText === "" && (
+              <View>
+                <Text style={styles.sectionTitle}>Popular Stocks</Text>
+                {popularStocks.map(
+                  (stock, index) =>
+                    stock && (
+                      <ListItem key={index} bottomDivider >
+                        <ListItem.Content>
+                          <ListItem.Title>{stock["01. symbol"]}</ListItem.Title>
+                          <ListItem.Subtitle>
+                            ${parseFloat(stock["05. price"]).toFixed(2)}
+                          </ListItem.Subtitle>
+                        </ListItem.Content>
+                        <Button
+                          title="Buy"
+                          onPress={() =>
+                            isNaN(parseFloat(stock["05. price"]))
+                              ? alert("Invalid stock price")
+                              : handleBuyStock(
+                                  stock["01. symbol"],
+                                  parseFloat(stock["05. price"])
+                                )
+                          }
+                        />
+                        <Button
+                          title="Sell"
+                          onPress={() => handleSellStock(stock["01. symbol"])}
+                        />
+                      </ListItem>
+                    )
+                )}
+              </View>
+            )}
+            {searchText !== "" && (
+              <View>
+                <Text style={styles.sectionTitle}>Search Results</Text>
+                {searchResults.map((stock, index) => (
+                  <ListItem key={index} bottomDivider>
+                    <ListItem.Content>
+                      <ListItem.Title>{stock["1. symbol"]}</ListItem.Title>
+                      <ListItem.Subtitle>{stock["2. name"]}</ListItem.Subtitle>
+                    </ListItem.Content>
+                    <Button
+                      title="Buy"
+                      onPress={() =>
+                        isNaN(parseFloat(stock["2. name"]))
+                          ? alert("Invalid stock price")
+                          : handleBuyStock(
+                              stock["1. symbol"],
+                              parseFloat(stock["2. name"])
+                            )
+                      }
+                    />
+                    <Button
+                      title="Sell"
+                      onPress={() => handleSellStock(stock["1. symbol"])}
+                    />
+                  </ListItem>
+                ))}
+              </View>
+            )}
+            <View>
+              <Text style={styles.sectionTitle}>My Portfolio</Text>
+              {portfolio.map((stock, index) => (
+                <ListItem key={index} bottomDivider>
+                  <ListItem.Content>
+                    <ListItem.Title>{stock.symbol}</ListItem.Title>
+                    <ListItem.Subtitle>
+                      {stock.quantity} shares @ $
+                      {parseFloat(stock.price).toFixed(2)}
+                    </ListItem.Subtitle>
+                  </ListItem.Content>
+                  <Button
+                    title="Sell"
+                    onPress={() => handleSellStock(stock.symbol)}
+                  />
+                </ListItem>
+              ))}
+            </View>
+          </ScrollView>
+        </>
+      }
     </View>
   );
 };
 
+/* Add the following styles to your styles object for the modal */
 const styles = StyleSheet.create({
+
   container: {
     flex: 1,
     paddingTop: 20,
+    backgroundColor: COLORS.red, // Updated background color
+    borderRadius: 10,
+  },
+  centeredView: {
     flex: 1,
-    height: "100%", // Set a fixed height for the container
-    overflow: "scroll", // Allow content to be scrollable within the container
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "#fff",
+    borderRadius: 10, // Updated border radius to 5 pixels
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 1.90,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  openButton: {
+    backgroundColor: "#F194FF",
+    borderRadius: 10, // Updated border radius to 5 pixels
+    padding: 10,
+    elevation: 2,
+    marginTop: 15,
+  },
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  modalInput: {
+    height: 40,
+    width: 200,
+    borderColor: "gray",
+    borderWidth: 1,
+    marginTop: 15,
+    paddingHorizontal: 10,
+    borderRadius: 5, // Updated border radius to 5 pixels
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center",
+    fontSize: 16,
+    fontWeight: "bold",
   },
   balanceContainer: {
-    flexGrow: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingHorizontal: 10,
     marginBottom: 10,
+    backgroundColor: COLORS.tertiary,
+    paddingVertical: 5, // Updated padding for vertical spacing
+    borderRadius: 5, // Updated border radius to 5 pixels
   },
   balanceText: {
-    fontSize: 18,
-    fontWeight: 'bold',
+    fontSize: 20,
+    fontWeight: "bold",
     marginLeft: 5,
   },
   searchInput: {
     height: 40,
-    borderColor: 'gray',
+    borderColor: "gray",
     borderWidth: 1,
-    paddingLeft: 8,
+    paddingHorizontal: 10,
     marginBottom: 10,
+    borderRadius: 5, // Updated border radius to 5 pixels
+  },
+  sectionContainer: {
+    backgroundColor: COLORS.red, // Cerise color for the box
+    paddingHorizontal: 10,
+    paddingVertical: 20, // Updated padding for vertical spacing
+    borderRadius: 5, // Added border radius for the box
+    marginBottom: 10, // Added margin bottom for separation
   },
   sectionTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    paddingLeft: 10,
-    paddingBottom: 5,
+    fontSize: 25, // Updated font size to make it larger
+    fontWeight: "bold",
+    textAlign: "center", // Centered text
+    color: "black", // Text color
   },
   listItemContainer: {
-    backgroundColor: 'violet'
+    backgroundColor: COLORS.tertiary,
+    borderRadius: 5, // Updated border radius to 5 pixels
+    marginVertical: 4,
   },
-  stockText: {
-    fontFamily: FONT.medium
+  stockTitle: {
+    fontWeight: "bold",
+    fontSize: 16,
+    marginBottom: 2,
   },
-  stockInfo: {
-    fontFamily: FONT.regular,
-    fontSize: SIZES.small
-  }
+  stockSubtitle: {
+    color: "#666",
+    fontSize: 14,
+  },
+  buyButton: {
+    backgroundColor: "#2196F3",
+    borderRadius: 5, // Updated border radius to 5 pixels
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    marginRight: 8,
+  },
+  sellButton: {
+    backgroundColor: "#FF4438",
+    borderRadius: 5, // Updated border radius to 5 pixels
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+  },
+  buttonTitle: {
+    fontSize: 14,
+  },
 });
 
 export default StockMarketTab;
