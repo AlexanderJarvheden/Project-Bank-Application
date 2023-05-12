@@ -14,16 +14,13 @@ import TransferScreen from "../components/TransferScreen";
 import LoanPlatformScreen from "../components/LoanPlatformScreen";
 
 
-const tabs = ["Accounts", "Transfer", "Stock Market", "Loans", "Sign out"];
-
-
-
+const tabs = ["Accounts", "Transfer", "Stock Market", "Loans"];
 
 const JobDetails = () => {
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [signedInUser, setSignedInUser] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
-  
+
   const ceriseBank = new Bank(1234);
 
   const handleSignIn = async (personalNumber, password) => {
@@ -35,7 +32,6 @@ const JobDetails = () => {
       Alert.alert('Error', 'Invalid Personal number or password.');
     }
   };
-
 
 
   const [activeTab, setActiveTab] = useState(tabs[0]);
@@ -57,19 +53,24 @@ const JobDetails = () => {
         />
       case "Loans":
         return <LoanPlatformScreen bank={ceriseBank} user={ceriseBank.users.get(signedInUser)} />
-      case "Sign out":
-        refresh();
-        break;
       default:
         break;
     }
   }
 
-
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.primary }}>
       {isSignedIn ? (
         <View style={{ flex: 1 }}>
+          <Stack.Screen options={{
+              title: "CeriseBank", headerStyle: { backgroundColor: COLORS.red },
+              headerTitleStyle: { fontSize: 30, color: COLORS.white },
+              headerRight: () =>
+                  <TouchableOpacity onPress={() => setIsSignedIn(false)}>
+                    <Text style={{ color: COLORS.white, marginRight: 10 }}>Sign out</Text>
+                  </TouchableOpacity>
+            }}
+            />
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={{ padding: SIZES.medium, paddingBottom: 100 }}>
               {displayTabContent()}
@@ -86,12 +87,12 @@ const JobDetails = () => {
           <View style={{ justifyContent: "center", alignItems: "center" }}>
             <Stack.Screen options={{
               title: "CeriseBank", headerStyle: { backgroundColor: COLORS.red },
-              headerTitleStyle: { fontSize: 30, color: COLORS.white }
+              headerTitleStyle: { fontSize: 30, color: COLORS.white },
             }}
             />
             <SignIn Bank={ceriseBank} onSignIn={handleSignIn} />
             <View style={{ justifyContent: "center", alignItems: "center" }}>
-              <TouchableOpacity onPress={() => { setShowCreateNewUser(true); setModalVisible(true); }}>
+              <TouchableOpacity onPress={() => { setModalVisible(true); }}>
                 <Text style={{ color: 'white', fontSize: 16, fontFamily: 'Arial', textAlign: 'center' }}>
                   New user? Create an account
                 </Text>
@@ -195,5 +196,18 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     textAlign: 'center',
+  },
+  headerButton: {
+    backgroundColor: COLORS.white,
+    borderRadius: 5,
+    paddingVertical: 8,
+    paddingHorizontal: 15,
+    marginRight: 10,
+  },
+  headerButtonText: {
+    color: COLORS.primary,
+    fontFamily: 'Arial',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 })
