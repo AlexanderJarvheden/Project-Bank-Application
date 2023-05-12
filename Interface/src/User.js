@@ -1,3 +1,5 @@
+import DataBase from "./DataBase";
+
 class User {
 
     constructor(id, name, password) {
@@ -39,11 +41,11 @@ class User {
         console.log(`User accounts after adding account:`, [...this.userAccounts]);
     }
 
-
-
-    removeAccount(accountNumber) {
+    async removeAccount(accountNumber) {
         this.userAccounts.delete(accountNumber);
+        await DataBase.storeUser(this.id, this);
     }
+
 
     toJSON() {
         return {
