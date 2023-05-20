@@ -1,7 +1,0 @@
-1,1,1
-JOCKE,JOCKE,jocke
-bajs,bajs,bajsalex,alex,alex
-aziz,aziz,aziz
-oskar,oskar,oskar
-oski,oski,oski
-SP0000000000,oski
