@@ -1,14 +1,13 @@
 import { ScrollView, View, Text, SafeAreaView, TouchableOpacity, StyleSheet, Modal, Pressable } from "react-native";
-import { Stack, Link } from 'expo-router'
+import { Stack} from 'expo-router'
 import SignIn from "../components/signin/signIn";
 import { COLORS, SIZES } from '../constants';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import AccountScreen from "../components/accounts/AccountScreen";
 import StockMarketTab from "../components/stockmarket/StockMarket";
 import Tabs from "../components/tabs/Tabs";
 import Bank from "../src/Bank";
 import CreateNewUser from "../components/signin/createNewUser";
-import User from "../src/User";
 import Database from '../src/DataBase';
 import TransferScreen from "../components/TransferScreen";
 import LoanPlatformScreen from "../components/LoanPlatformScreen";
@@ -90,7 +89,7 @@ const App = () => {
               headerTitleStyle: { fontSize: 30, color: COLORS.white },
             }}
             />
-            <SignIn Bank={ceriseBank} onSignIn={handleSignIn} />
+            <SignIn onSignIn={handleSignIn} />
             <View style={{ justifyContent: "center", alignItems: "center" }}>
               <TouchableOpacity onPress={() => { setModalVisible(true); }}>
                 <Text style={{ color: 'white', fontSize: 16, fontFamily: 'Arial', textAlign: 'center' }}>

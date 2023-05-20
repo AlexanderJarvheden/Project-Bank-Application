@@ -1,18 +1,16 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { COLORS } from '../../constants';
 import Database from '../../src/DataBase';
 
-const SignIn = ({ Bank, onSignIn }) => {
+const SignIn = ({ onSignIn }) => {
   const [personalNumber, setpersonalNumber] = useState('');
   const [password, setPassword] = useState('');
 
   const handleSignIn = async () => {
     const user = await Database.getUser(personalNumber);
     if (user && user.password === password) {
-      //onSignIn(personalNumber, password);
       onSignIn(personalNumber, password);
-      // onSignIn(user);
     } else {
       Alert.alert('Error', 'Invalid Personal number or password.');
     }

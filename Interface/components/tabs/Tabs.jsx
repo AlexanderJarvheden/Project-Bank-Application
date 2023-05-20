@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, TouchableOpacity } from 'react-native'
+import { Text, TouchableOpacity } from 'react-native'
 import styles from './tabs.style';
 import { SafeAreaView } from 'react-native';
 
@@ -10,25 +10,6 @@ const TabButton = ({name, activeTab, onHandleSearchType}) => (
     <Text style={styles.btnText(name, activeTab)} numberOfLines={1} ellipsizeMode='tail'>{name}</Text>
   </TouchableOpacity>
 )
-
-/*
-const Tabs = ({ tabs, activeTab, setActiveTab }) => {
-  return (
-    <View style={styles.stickyContainer}>
-      <View style={styles.container}>
-        {tabs.map((item, index) => (
-          <TabButton
-            key={index}
-            name={item}
-            activeTab={activeTab}
-            onHandleSearchType={() => setActiveTab(item)}
-          />
-        ))}
-      </View>
-    </View>
-  )
-}
-*/
 
 const Tabs = ({ tabs, activeTab, setActiveTab }) => {
   return (
