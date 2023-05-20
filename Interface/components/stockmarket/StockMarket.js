@@ -5,7 +5,6 @@ import {
   ScrollView,
   TextInput,
   Text,
-  Alert,
   Modal,
   TouchableHighlight,
 } from "react-native";

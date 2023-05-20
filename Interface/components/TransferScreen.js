@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { View, TextInput, Text, TouchableOpacity, ScrollView, StyleSheet, Alert } from 'react-native';
 import Database from '../src/DataBase';
 
