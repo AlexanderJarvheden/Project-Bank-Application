@@ -12,7 +12,12 @@ More specifically:
 **Account Class:** The Account Class will represent individual bank accounts within the app. Each account object will store information about the account holder, account number, balance, and other relevant details. The class will provide methods for depositing and withdrawing money, as well as for transferring funds between accounts. By implementing the Account Class, the app will allow users to manage their finances by keeping track of their account balances, transactions, and other banking activities.
 
 
-To use the app try running it through the QR-code in this url: 
-
-https://expo.dev/@alexanderjarvheden/Interface?serviceType=classic&distribution=expo-go
+Requirements in order to use the app are as follwing:
+1. Make sure you have expo installed through your terminal
+2. Install the expo-go app on your mobile device
+3. To run the application start expo in your terminal when you are inside the project, e.g type "expo start"
+4. Scan the QR-code in your terminal with your mobile device
+5. The app should open and you can navigate in it.
+6. If you want to be able to use the app at all times without having to activate expo through the terminal, publish the app to expo
+7. Now you can run the project on your device whenever you want, and it does not require your computer/laptop to be powered on
 
