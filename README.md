@@ -1,15 +1,13 @@
 # Project-Bank-Application
 
-Our project will be creating a bank app that consists of four main classes. These are 1) a share class for shares in OMXS30, 2) a loaning class for loaning money, 3) a bank class for creating banks, and 4) an account class that will consist of all accounts in the bank.
-More specifically:
+Our project consisted of showing the knowledge aquired through our first year in Computer Science and Engineering at KTH Royal Institute of Technology, and developing a project of our own choice. We decided to test our limits and learn many new things including the use of frameworks, React Native, JavaScript and Expo. We learnt a lot and developed a prototype of what could work as a Bank application - CeriseBank.
 
-**Share Class (OMXS30):** The Share Class will handle the representation of individual stocks within the OMXS30 index, which consists of the 30 most traded stocks on the Stockholm Stock Exchange. Each share object will store relevant information such as the stock's name, latest price, opening price, closing price, trading volume, and percentage change. This class will provide methods for accessing and updating this information, allowing users to track and manage their stock investments.
-
-**Loaning Class:** The Loaning Class will handle loan-related operations within the bank app. It will store information about each loan, such as the loan amount, interest rate, outstanding balance, and credit limit. This class will provide methods for applying for loans, approving loans, repaying loans, and updating interest rates. By implementing this class, users can apply for loans, manage their outstanding balances, and monitor their interest payments.
-
-**Bank Class:** The Bank Class will be responsible for creating and managing bank objects. Each bank object will store information about the bank, such as its name and address. The class will provide methods for adding and removing accounts, loans, and shares, as well as for performing other bank-related operations. With this class, it will facilitate the creation and management of multiple banks, each with its own set of accounts.
-
-**Account Class:** The Account Class will represent individual bank accounts within the app. Each account object will store information about the account holder, account number, balance, and other relevant details. The class will provide methods for depositing and withdrawing money, as well as for transferring funds between accounts. By implementing the Account Class, the app will allow users to manage their finances by keeping track of their account balances, transactions, and other banking activities.
+Main features in the application are:
+- Create new users and sign in. When signed in, a sign out tab shows at the top right of the header.
+- Create new accounts with unique account numbers and account types (checkings, savings etc)
+- Transfer money from different accounts (only possible between a user's own accounts and not between two users)
+- A stock plattform where you can check the latest prices on stocks in the S&P 500 and buy a wished amount with fictional money. You can also see your portfolio with stocks and sell them if you want.
+- A loan plattform where it was supposed to calculate the interest based on the balance of the user to assess its risk in comparision with the loan amount. The user can enter the wished amount of the loan and the interest is calculated, then the payback can be done on the same page. This feature did sadly not get developed in time and does thus crash the program.
 
 
 Requirements in order to use the app are as follwing:
