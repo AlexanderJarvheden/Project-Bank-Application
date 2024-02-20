@@ -1,5 +1,5 @@
 # Project-Bank-Application
-
+## Created by: Alexander Järvheden, Joachim Olsson, Aziz Ali
 Demo images are at the end of the README. [Demo Video is here](https://youtu.be/aYndDsVObr8)
 
 Our project consisted of showing the knowledge aquired through our first year in Computer Science and Engineering at KTH Royal Institute of Technology, and developing a project of our own choice. We decided to test our limits and learn many new things including the use of frameworks, React Native, JavaScript and Expo. We learnt a lot and developed a prototype of what could work as a Bank application - CeriseBank.
